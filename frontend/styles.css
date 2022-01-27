@@ -144,3 +144,34 @@ body {
     width: fit-content;
     align-self: flex-end;
 }
+
+
+/* responsive */
+
+@media (max-width: 950px) {
+    .badge_header {
+        display: flex;
+        flex-direction: column-reverse;
+        justify-content: start;
+        align-items: center;
+    }
+    .deals_wrapper {
+        grid-template-columns: 1fr;
+        margin-left: 30px;
+    }
+    .title {
+        font-size: 1.3em;
+    }
+    .subtitle {
+        font-size: 1em;
+    }
+    .new_price {
+        font-size: 1.8em;
+    }
+    .old_price {
+        font-size: 1.3em;
+    }
+    .view_btn {
+        font-size: 1.3em;
+    }
+}
