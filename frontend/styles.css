@@ -1,0 +1,146 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+body {
+    margin: 0;
+    background-color: #E5E5E5;
+}
+
+.deals_wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-left: 2.5%;
+    margin-bottom: 40px;
+}
+
+.deal_badge {
+    background-color: #FFFFFF;
+    width: 90%;
+    border-radius: 10px;
+    margin-top: 40px;
+}
+
+
+/* progresbar */
+
+.progress {
+    height: 2em;
+    width: 100% -3px;
+    border: 3px solid;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+}
+
+.progress:before {
+    content: attr(data-label);
+    font-size: 1.8em;
+    position: absolute;
+    text-align: center;
+    left: 0;
+    right: 0;
+    color: #fff;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+}
+
+.progress .value {
+    display: inline-block;
+    height: 100%;
+}
+
+
+/* badge header */
+
+.badge_content {
+    margin: 1em;
+    margin-left: 1.5em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: inherit;
+}
+
+.title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1.5em;
+    color: #253858;
+}
+
+.subtitle {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 1.2em;
+    color: #253858;
+    line-height: 0;
+}
+
+.badge_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.badge_header img {
+    height: 60px;
+}
+
+
+/* badge image */
+
+.deal_img {
+    max-height: 10em;
+    max-width: 60%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* badge footer */
+
+.badge_footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.prices {
+    width: fit-content;
+}
+
+.new_price {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 2em;
+    color: #253858;
+    text-align: right;
+    margin-top: 0;
+}
+
+.old_price {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 1.5em;
+    color: #253858;
+    text-decoration: line-through;
+    line-height: 0;
+    text-align: right;
+    margin-bottom: 0;
+}
+
+.view_btn_anchor {
+    text-decoration: none;
+}
+
+.view_btn {
+    color: #FFFFFF;
+    border-radius: 10px;
+    padding: 0.5em;
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 1.5em;
+    text-align: center;
+    margin-top: 1em;
+    width: fit-content;
+    align-self: flex-end;
+}
