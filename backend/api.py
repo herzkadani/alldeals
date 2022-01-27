@@ -35,10 +35,11 @@ def get_digitec_deal(url):
     soup = BeautifulSoup(r.text, 'html.parser')
     deal["category"] = soup.find('a', {'class': 'sc-1xxwfxa-0'}).text
     deal["product"] = soup.find('div', {'class': 'sc-j0oacw-0'}).text
-    deal["image"] = soup.find('img', {'class': 'sc-7yh1zh-0'}).get('src')
+    deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
     deal["status"] = soup.find('div', {'class': 'salesInformationView_stockRemaining__tDSt7'}).text.replace("\xa0"," ")
     deal["new_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('strong').text.replace('.\u2013','')
     deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
+    #deal["raw"] = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])
     return deal
 
 def get_any_deal(deal):
