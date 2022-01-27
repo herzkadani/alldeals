@@ -3,6 +3,12 @@
 $json = file_get_contents("https://api.gk.wtf/");
 $data = json_decode($json, true);
 
+
+$digitecNumberOfItems = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItems"];
+$digitecNumberOfItemsSold = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItemsSold"];
+// calculate percentage still available
+$digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digitecNumberOfItems * 100;
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +25,7 @@ $data = json_decode($json, true);
     <div class=deals_wrapper>
         <div class="deal_badge">
             <div class="progress" data-label="<?= $data["digitec"]["status"] ?>" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
-                <span class="value" style="width:50%; background-color: #005598;"></span>
+                <span class="value" style="width:<?=$digitecPercentage?>%; background-color: #005598;"></span>
             </div>
             <div class="badge_content">
                 <div class="badge_header">
@@ -29,7 +35,7 @@ $data = json_decode($json, true);
                     </div>
                     <img src="assets/img/digitec.jpg" alt="digitec logo">
                 </div>
-                <img src="https://www.digitec.ch/im/Files/4/7/4/7/7/7/4/5/Norton360_5D-5MO-SKU_ESD-Boxshot_2043x2366.jpg?impolicy=ProductTileImage&resizeWidth=601&resizeHeight=700&cropWidth=601&cropHeight=700&quality=high" class="deal_img">
+                <img src="<?=reset($data["digitec"]["apidata"])["images"][0]["url"]?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
                         <h1 class="new_price"><?= $data["digitec"]["new_price"] ?>.-</h1>
