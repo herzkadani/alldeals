@@ -41,7 +41,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                         <h1 class="new_price"><?= $data["digitec"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["digitec"]["old_price"] ?>.-</h2>
                     </div>
-                    <div><a href="https://www.digitec.ch/de/liveshopping/" class="view_btn_anchor">
+                    <div><a href="https://www.digitec.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #005598;">Ansehen</div>
                         </a></div>
 
@@ -66,7 +66,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["daydeal_daily"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["daydeal_daily"]["old_price"] ?>.-</h2>
                     </div>
-                    <div><a href="https://daydeal.ch/" class="view_btn_anchor">
+                    <div><a href="https://daydeal.ch/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #3FAA35;">Ansehen</div>
                         </a></div>
 
@@ -91,7 +91,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["daydeal_weekly"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["daydeal_weekly"]["old_price"] ?>.-</h2>
                     </div>
-                    <div><a href="https://www.daydeal.ch/deal-of-the-week" class="view_btn_anchor">
+                    <div><a href="https://www.daydeal.ch/deal-of-the-week" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #3FAA35;">Ansehen</div>
                         </a></div>
 
@@ -116,7 +116,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["blickdeal"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["blickdeal"]["old_price"] ?>.-</h2>
                     </div>
-                    <div><a href="https://blickdeal.ch/" class="view_btn_anchor">
+                    <div><a href="https://blickdeal.ch/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #E20000;">Ansehen</div>
                         </a></div>
 
