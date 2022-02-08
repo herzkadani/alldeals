@@ -2,6 +2,7 @@
 
 import requests
 import json
+import re
 from html2text import html2text
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
@@ -18,9 +19,10 @@ def get_deal(url):
     deal["short_description"] = soup.find('ul', {'class': 'product-description__list'}).text
     deal["new_price"] = soup.find('h2', {'class': 'product-pricing__prices-new-price'}).text.replace("CHF ","").replace(".\u2013","")
     oldprice = soup.find('strong', {'class': 'product-pricing__prices-old-price'}).text
-    if oldprice[-1] == "2":
-        deal["old_price"] = oldprice[:-1]
     oldprice = oldprice.replace("\n","").replace("statt CHF ","").replace(" ","").replace(".\u20132","")
+    # remove trailing 2
+    if oldprice[-2:] == "2":
+        oldprice = oldprice[:-2]
     deal["old_price"] = oldprice
     deal["availability"] = soup.find('strong', {'class': 'product-progress__availability'}).text
     deal["image"] = soup.find('img', {'class': 'product-img-main-pic'}).get('src')
