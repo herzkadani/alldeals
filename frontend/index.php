@@ -1,6 +1,6 @@
 <?php
 
-$json = file_get_contents("https://api.gk.wtf/");
+$json = file_get_contents("https://gianklug.com/alldeals/backend/index.php");
 $data = json_decode($json, true);
 
 
