@@ -2,6 +2,13 @@
 body {
     margin: 0;
     background-color: #E5E5E5;
+    font-family: 'Roboto Condensed', sans-serif;
+}
+
+h1 {
+    margin: 15px;
+    padding: 15px;
+    color: #ccc;
 }
 
 .deals_wrapper {
@@ -37,7 +44,6 @@ body {
     left: 0;
     right: 0;
     color: #fff;
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
 }
 
@@ -59,14 +65,12 @@ body {
 }
 
 .title {
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 700;
     font-size: 1.5em;
     color: #253858;
 }
 
 .subtitle {
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
     font-size: 1.2em;
     color: #253858;
@@ -109,7 +113,6 @@ body {
 }
 
 .new_price {
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 700;
     font-size: 2em;
     color: #253858;
@@ -118,7 +121,6 @@ body {
 }
 
 .old_price {
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
     font-size: 1.5em;
     color: #253858;
@@ -136,7 +138,6 @@ body {
     color: #FFFFFF;
     border-radius: 10px;
     padding: 0.5em;
-    font-family: 'Roboto Condensed', sans-serif;
     font-weight: 400;
     font-size: 1.5em;
     text-align: center;

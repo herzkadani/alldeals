@@ -1,6 +1,7 @@
 <?php
 
-$json = file_get_contents("https://gianklug.com/alldeals/backend/index.php");
+#$json = file_get_contents("https://gianklug.com/alldeals/backend/index.php");
+$json = shell_exec("../backend/api.py");
 $data = json_decode($json, true);
 
 
@@ -22,6 +23,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
 </head>
 
 <body>
+    <h1>AllDeals<sup>TM</sub></h1>
     <div class=deals_wrapper>
         <div class="deal_badge">
             <div class="progress" data-label="<?= $data["digitec"]["status"] ?>" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
