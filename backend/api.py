@@ -6,6 +6,8 @@ import re
 from html2text import html2text
 from bs4 import BeautifulSoup
 from multiprocessing import Pool
+from random import randint
+import time
 
 def get_deal(url):
     """
@@ -26,6 +28,8 @@ def get_deal(url):
     deal["old_price"] = oldprice
     deal["availability"] = soup.find('strong', {'class': 'product-progress__availability'}).text
     deal["image"] = soup.find('img', {'class': 'product-img-main-pic'}).get('src')
+    # Add timestamp
+    deal["timestamp"] = int(round(time.time() * 1000))
     return deal
 
 def get_digitec_deal(url):
@@ -42,12 +46,15 @@ def get_digitec_deal(url):
     deal["new_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('strong').text.replace('.\u2013','')
     deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
     #deal["raw"] = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])
+    # Add timestamp
+    deal["timestamp"] = int(round(time.time() * 1000))
     return deal
 
 def get_any_deal(deal):
     """
     Return deal by string
     """
+    time.sleep(randint(1,120))
     if deal == "digitec":
         return get_digitec_deal("https://digitec.ch/de/liveshopping/81")
     elif deal == "daydeal_daily":
@@ -63,4 +70,5 @@ output["digitec"] = deals[0]
 output["daydeal_daily"] = deals[1]
 output["daydeal_weekly"] = deals[2]
 output["blickdeal"] = deals[3]
-print(json.dumps(output))
+with open("/var/www/alldeals/frontend/deals.json", "w") as f:
+    f.write(json.dumps(output))

@@ -1,7 +1,12 @@
 <?php
 
 #$json = file_get_contents("https://gianklug.com/alldeals/backend/index.php");
-$json = shell_exec("../backend/api.py");
+#$json = shell_exec("../backend/api.py");
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+$json = file_get_contents("/var/www/alldeals/frontend/deals.json");
 $data = json_decode($json, true);
 
 
