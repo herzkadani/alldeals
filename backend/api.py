@@ -57,6 +57,8 @@ def get_any_deal(deal):
     time.sleep(randint(1,120))
     if deal == "digitec":
         return get_digitec_deal("https://digitec.ch/de/liveshopping/81")
+    elif deal == "galaxus":
+        return get_digitec_deal("https://galaxus.ch/de/liveshopping/81")
     elif deal == "daydeal_daily":
         return get_deal("https://www.daydeal.ch/")
     elif deal == "daydeal_weekly":
@@ -64,11 +66,12 @@ def get_any_deal(deal):
     else:
         return get_deal("https://www.blickdeal.ch/")
 with Pool(5) as p:
-    deals = p.map(get_any_deal, ["digitec", "daydeal_daily", "daydeal_weekly", "blick"])
+    deals = p.map(get_any_deal, ["digitec", "daydeal_daily", "daydeal_weekly", "blick", "galaxus"])
 output = {}
 output["digitec"] = deals[0]
 output["daydeal_daily"] = deals[1]
 output["daydeal_weekly"] = deals[2]
 output["blickdeal"] = deals[3]
+output["galaxus"] = deals[4]
 with open("/var/www/alldeals/frontend/deals.json", "w") as f:
     f.write(json.dumps(output))

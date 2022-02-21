@@ -12,8 +12,22 @@ $data = json_decode($json, true);
 
 $digitecNumberOfItems = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItems"];
 $digitecNumberOfItemsSold = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItemsSold"];
+
+$galaxusNumberOfItems = array_values($data["galaxus"]["apidata"])[1]["salesInformation"]["numberOfItems"];
+$galaxusNumberOfItemsSold= array_values($data["galaxus"]["apidata"])[1]["salesInformation"]["numberOfItemsSold"];
 // calculate percentage still available
 $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digitecNumberOfItems * 100;
+$galaxusPercentage = ($galaxusNumberOfItems - $galaxusNumberOfItemsSold) / $galaxusNumberOfItems * 100;
+
+
+function time_elapsed_string($datetime, $full = false) {
+    // set timezone
+    date_default_timezone_set('UTC');
+    $now = new DateTime;
+    $ago = new DateTime("@".$datetime);
+    $diff = $now->diff($ago);
+    return $diff->format('vor %i Minuten');
+}
 
 ?>
 <!DOCTYPE html>
@@ -28,10 +42,12 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
 </head>
 
 <body>
-    <h1>AllDeals<sup>TM</sub></h1>
+    <header>
+        <h1>AllDeals&nbsp;</h1><h3>Alle Tagesangebote kombiniert!</h3>
+    </header>
     <div class=deals_wrapper>
         <div class="deal_badge">
-            <div class="progress" data-label="<?= $data["digitec"]["status"] ?>" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
+            <div class="progress" data-label="<?= floor($digitecPercentage) ?>%" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
                 <span class="value" style="width:<?=$digitecPercentage?>%; background-color: #005598;"></span>
             </div>
             <div class="badge_content">
@@ -48,8 +64,35 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                         <h1 class="new_price"><?= $data["digitec"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["digitec"]["old_price"] ?>.-</h2>
                     </div>
+                    <span class="last_update">Letztes Update: <?= time_elapsed_string($data["digitec"]["timestamp"]) ?></span>
                     <div><a href="https://www.digitec.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #005598;">Ansehen</div>
+                        </a></div>
+
+                </div>
+            </div>
+        </div>
+        <div class="deal_badge">
+            <div class="progress" data-label="<?= floor($galaxusPercentage) ?>%" style="border-color: #222; text-shadow: -1px -1px 0 #222, 0 -1px 0 #222, 1px -1px 0 #222, 1px 0 0 #222, 1px 1px 0 #222, 0 1px 0 #222, -1px 1px 0 #222, -1px 0 0 #222;">
+                <span class="value" style="width:<?=$galaxusPercentage?>%; background-color: #222;"></span>
+            </div>
+            <div class="badge_content">
+                <div class="badge_header">
+                    <div>
+                        <h1 class="title"><?= $data["galaxus"]["product"] ?></h1>
+                        <h2 class="subtitle"><?= $data["galaxus"]["category"] ?></h2>
+                    </div>
+                    <img src="assets/img/galaxus.jpg" alt="galaxus logo">
+                </div>
+                <img src="<?=reset($data["galaxus"]["apidata"])["images"][0]["url"]?>" class="deal_img">
+                <div class="badge_footer">
+                    <div class="prices">
+                        <h1 class="new_price"><?= $data["galaxus"]["new_price"] ?>.-</h1>
+                        <h2 class="old_price"><?= $data["galaxus"]["old_price"] ?>.-</h2>
+                    </div>
+                    <span class="last_update">Letztes Update: <?= time_elapsed_string($data["galaxus"]["timestamp"]) ?></span>
+                    <div><a href="https://www.galaxus.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
+                            <div class="view_btn" style="background-color: #222;">Ansehen</div>
                         </a></div>
 
                 </div>
@@ -73,6 +116,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["daydeal_daily"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["daydeal_daily"]["old_price"] ?>.-</h2>
                     </div>
+                    <span class="last_update">Letztes Update: <?= time_elapsed_string($data["daydeal_daily"]["timestamp"]) ?></span>
                     <div><a href="https://daydeal.ch/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #3FAA35;">Ansehen</div>
                         </a></div>
@@ -98,6 +142,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["daydeal_weekly"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["daydeal_weekly"]["old_price"] ?>.-</h2>
                     </div>
+                    <span class="last_update">Letztes Update: <?= time_elapsed_string($data["daydeal_weekly"]["timestamp"]) ?></span>
                     <div><a href="https://www.daydeal.ch/deal-of-the-week" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #3FAA35;">Ansehen</div>
                         </a></div>
@@ -123,6 +168,7 @@ $digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digi
                     <h1 class="new_price"><?= $data["blickdeal"]["new_price"] ?>.-</h1>
                         <h2 class="old_price"><?= $data["blickdeal"]["old_price"] ?>.-</h2>
                     </div>
+                    <span class="last_update">Letztes Update: <?= time_elapsed_string($data["blickdeal"]["timestamp"]) ?></span>
                     <div><a href="https://blickdeal.ch/" class="view_btn_anchor" target="_blank">
                             <div class="view_btn" style="background-color: #E20000;">Ansehen</div>
                         </a></div>
