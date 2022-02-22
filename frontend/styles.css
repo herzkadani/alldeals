@@ -25,6 +25,9 @@ header h3 {
     color: #5C5C5C;
 }
 
+.expired {
+    opacity: 0.4;
+}
 .deals_wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -146,7 +149,6 @@ header h3 {
     color: #253858;
     text-decoration: line-through;
     line-height: 0;
-    text-align: right;
     margin-bottom: 0;
 }
 

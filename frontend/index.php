@@ -46,7 +46,7 @@ function time_elapsed_string($datetime, $full = false) {
         <h1>AllDeals&nbsp;</h1><h3>Alle Tagesangebote kombiniert!</h3>
     </header>
     <div class=deals_wrapper>
-        <div class="deal_badge">
+    <div class="deal_badge <?php if ($digitecPercentage==0){echo "expired";}?>">
             <div class="progress" data-label="<?= floor($digitecPercentage) ?>%" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
                 <span class="value" style="width:<?=$digitecPercentage?>%; background-color: #005598;"></span>
             </div>
@@ -61,8 +61,8 @@ function time_elapsed_string($datetime, $full = false) {
                 <img src="<?=reset($data["digitec"]["apidata"])["images"][0]["url"]?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
-                        <h1 class="new_price"><?= $data["digitec"]["new_price"] ?>.-</h1>
-                        <h2 class="old_price"><?= $data["digitec"]["old_price"] ?>.-</h2>
+                        <h1 class="new_price">CHF <?= $data["digitec"]["new_price"] ?></h1>
+                        <h2 class="old_price">CHF <?= $data["digitec"]["old_price"] ?></h2>
                     </div>
                     <span class="last_update">Letztes Update: <?= time_elapsed_string($data["digitec"]["timestamp"]) ?></span>
                     <div><a href="https://www.digitec.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
@@ -72,7 +72,7 @@ function time_elapsed_string($datetime, $full = false) {
                 </div>
             </div>
         </div>
-        <div class="deal_badge">
+        <div class="deal_badge <?php if ($galaxusPercentage==0){echo "expired";}?>">
             <div class="progress" data-label="<?= floor($galaxusPercentage) ?>%" style="border-color: #222; text-shadow: -1px -1px 0 #222, 0 -1px 0 #222, 1px -1px 0 #222, 1px 0 0 #222, 1px 1px 0 #222, 0 1px 0 #222, -1px 1px 0 #222, -1px 0 0 #222;">
                 <span class="value" style="width:<?=$galaxusPercentage?>%; background-color: #222;"></span>
             </div>
@@ -87,8 +87,8 @@ function time_elapsed_string($datetime, $full = false) {
                 <img src="<?=reset($data["galaxus"]["apidata"])["images"][0]["url"]?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
-                        <h1 class="new_price"><?= $data["galaxus"]["new_price"] ?>.-</h1>
-                        <h2 class="old_price"><?= $data["galaxus"]["old_price"] ?>.-</h2>
+                        <h1 class="new_price">CHF <?= $data["galaxus"]["new_price"] ?></h1>
+                        <h2 class="old_price">CHF <?= $data["galaxus"]["old_price"] ?></h2>
                     </div>
                     <span class="last_update">Letztes Update: <?= time_elapsed_string($data["galaxus"]["timestamp"]) ?></span>
                     <div><a href="https://www.galaxus.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
@@ -98,7 +98,7 @@ function time_elapsed_string($datetime, $full = false) {
                 </div>
             </div>
         </div>
-        <div class="deal_badge">
+        <div class="deal_badge <?php if ($data["daydeal_daily"]["availability"]==0){echo "expired";}?>">
             <div class="progress" data-label="<?= $data["daydeal_daily"]["availability"] ?>" style="border-color: #3FAA35; text-shadow: -1px -1px 0 #3FAA35, 0 -1px 0 #3FAA35, 1px -1px 0 #3FAA35, 1px 0 0 #3FAA35, 1px 1px 0 #3FAA35, 0 1px 0 #3FAA35, -1px 1px 0 #3FAA35, -1px 0 0 #3FAA35;">
                 <span class="value" style="width:<?= $data["daydeal_daily"]["availability"] ?>; background-color: #3FAA35;"></span>
             </div>
@@ -113,8 +113,8 @@ function time_elapsed_string($datetime, $full = false) {
                 <img src="<?= $data["daydeal_daily"]["image"] ?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
-                    <h1 class="new_price"><?= $data["daydeal_daily"]["new_price"] ?>.-</h1>
-                        <h2 class="old_price"><?= $data["daydeal_daily"]["old_price"] ?>.-</h2>
+                    <h1 class="new_price">CHF <?= $data["daydeal_daily"]["new_price"] ?></h1>
+                        <h2 class="old_price">CHF <?= $data["daydeal_daily"]["old_price"] ?></h2>
                     </div>
                     <span class="last_update">Letztes Update: <?= time_elapsed_string($data["daydeal_daily"]["timestamp"]) ?></span>
                     <div><a href="https://daydeal.ch/" class="view_btn_anchor" target="_blank">
@@ -124,7 +124,7 @@ function time_elapsed_string($datetime, $full = false) {
                 </div>
             </div>
         </div>
-        <div class="deal_badge">
+        <div class="deal_badge <?php if ($data["daydeal_weekly"]["availability"]==0){echo "expired";}?>">
         <div class="progress" data-label="<?= $data["daydeal_weekly"]["availability"] ?>" style="border-color: #3FAA35; text-shadow: -1px -1px 0 #3FAA35, 0 -1px 0 #3FAA35, 1px -1px 0 #3FAA35, 1px 0 0 #3FAA35, 1px 1px 0 #3FAA35, 0 1px 0 #3FAA35, -1px 1px 0 #3FAA35, -1px 0 0 #3FAA35;">
                 <span class="value" style="width:<?= $data["daydeal_weekly"]["availability"] ?>; background-color: #3FAA35;"></span>
             </div>
@@ -139,8 +139,8 @@ function time_elapsed_string($datetime, $full = false) {
                 <img src="<?= $data["daydeal_weekly"]["image"] ?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
-                    <h1 class="new_price"><?= $data["daydeal_weekly"]["new_price"] ?>.-</h1>
-                        <h2 class="old_price"><?= $data["daydeal_weekly"]["old_price"] ?>.-</h2>
+                    <h1 class="new_price">CHF <?= $data["daydeal_weekly"]["new_price"] ?></h1>
+                        <h2 class="old_price">CHF <?= $data["daydeal_weekly"]["old_price"] ?></h2>
                     </div>
                     <span class="last_update">Letztes Update: <?= time_elapsed_string($data["daydeal_weekly"]["timestamp"]) ?></span>
                     <div><a href="https://www.daydeal.ch/deal-of-the-week" class="view_btn_anchor" target="_blank">
@@ -150,7 +150,7 @@ function time_elapsed_string($datetime, $full = false) {
                 </div>
             </div>
         </div>
-        <div class="deal_badge">
+        <div class="deal_badge <?php if ($data["blickdeal"]["availability"]==0){echo "expired";}?>">
         <div class="progress" data-label="<?= $data["blickdeal"]["availability"] ?>" style="border-color: #E20000; text-shadow: -1px -1px 0 #E20000, 0 -1px 0 #E20000, 1px -1px 0 #E20000, 1px 0 0 #E20000, 1px 1px 0 #E20000, 0 1px 0 #E20000, -1px 1px 0 #E20000, -1px 0 0 #E20000;">
                 <span class="value" style="width:<?= $data["blickdeal"]["availability"] ?>; background-color: #E20000;"></span>
             </div>
@@ -165,8 +165,8 @@ function time_elapsed_string($datetime, $full = false) {
                 <img src="<?= $data["blickdeal"]["image"] ?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
-                    <h1 class="new_price"><?= $data["blickdeal"]["new_price"] ?>.-</h1>
-                        <h2 class="old_price"><?= $data["blickdeal"]["old_price"] ?>.-</h2>
+                    <h1 class="new_price">CHF <?= $data["blickdeal"]["new_price"] ?></h1>
+                        <h2 class="old_price">CHF <?= $data["blickdeal"]["old_price"] ?></h2>
                     </div>
                     <span class="last_update">Letztes Update: <?= time_elapsed_string($data["blickdeal"]["timestamp"]) ?></span>
                     <div><a href="https://blickdeal.ch/" class="view_btn_anchor" target="_blank">
