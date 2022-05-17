@@ -55,6 +55,9 @@ def get_digitec_deal(url):
     deal["availability"] = str(floor(100 - apidata[apidata_keys[1]]["salesInformation"]["numberOfItemsSold"] / apidata[apidata_keys[1]]["salesInformation"]["numberOfItems"] * 100))+"%"
     deal["new_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('strong').text.replace('.\u2013','')
     deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
+    match = re.finditer(r"([0-9]+\.([0-9]{2}|–))", deal["old_price"])
+    for m in match:
+        deal["old_price"] = m.group(0)
 
     if not "." in deal["new_price"]:
         deal["new_price"] = deal["new_price"] + ".-"
