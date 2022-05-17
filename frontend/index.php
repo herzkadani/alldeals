@@ -6,20 +6,8 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$json = file_get_contents("/var/www/alldeals/frontend/deals.json");
+$json = file_get_contents("/var/www/alldeals-beta/frontend/deals.json");
 $data = json_decode($json, true);
-
-
-$digitecNumberOfItems = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItems"];
-$digitecNumberOfItemsSold = array_values($data["digitec"]["apidata"])[1]["salesInformation"]["numberOfItemsSold"];
-
-$galaxusNumberOfItems = array_values($data["galaxus"]["apidata"])[1]["salesInformation"]["numberOfItems"];
-$galaxusNumberOfItemsSold= array_values($data["galaxus"]["apidata"])[1]["salesInformation"]["numberOfItemsSold"];
-// calculate percentage still available
-$digitecPercentage = ($digitecNumberOfItems - $digitecNumberOfItemsSold) / $digitecNumberOfItems * 100;
-$galaxusPercentage = ($galaxusNumberOfItems - $galaxusNumberOfItemsSold) / $galaxusNumberOfItems * 100;
-
-
 function time_elapsed_string($datetime, $full = false) {
     // set timezone
     date_default_timezone_set('UTC');
@@ -46,19 +34,19 @@ function time_elapsed_string($datetime, $full = false) {
         <h1>AllDeals&nbsp;</h1><h3>Alle Tagesangebote kombiniert!</h3>
     </header>
     <div class=deals_wrapper>
-    <div class="deal_badge <?php if ($digitecPercentage==0){echo "expired";}?>">
-            <div class="progress" data-label="<?= floor($digitecPercentage) ?>%" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
-                <span class="value" style="width:<?=$digitecPercentage?>%; background-color: #005598;"></span>
+    <div class="deal_badge <?php if ($data["digitec"]["availability"]==0){echo "expired";}?>">
+            <div class="progress" data-label="<?= floor($data["digitec"]["availability"]) ?>%" style="border-color: #005598; text-shadow: -1px -1px 0 #005598, 0 -1px 0 #005598, 1px -1px 0 #005598, 1px 0 0 #005598, 1px 1px 0 #005598, 0 1px 0 #005598, -1px 1px 0 #005598, -1px 0 0 #005598;">
+                <span class="value" style="width:<?=$data["digitec"]["availability"]?>; background-color: #005598;"></span>
             </div>
             <div class="badge_content">
                 <div class="badge_header">
                     <div>
-                        <h1 class="title"><?= $data["digitec"]["product"] ?></h1>
-                        <h2 class="subtitle"><?= $data["digitec"]["category"] ?></h2>
+                        <h1 class="title"><?= $data["digitec"]["title"] ?></h1>
+                        <h2 class="subtitle"><?= $data["digitec"]["subtitle"] ?></h2>
                     </div>
                     <img src="assets/img/digitec.jpg" alt="digitec logo">
                 </div>
-                <img src="<?=reset($data["digitec"]["apidata"])["images"][0]["url"]?>" class="deal_img">
+                <img src="<?=$data["digitec"]["image"] ?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
                         <h1 class="new_price">CHF <?= $data["digitec"]["new_price"] ?></h1>
@@ -72,19 +60,19 @@ function time_elapsed_string($datetime, $full = false) {
                 </div>
             </div>
         </div>
-        <div class="deal_badge <?php if ($galaxusPercentage==0){echo "expired";}?>">
-            <div class="progress" data-label="<?= floor($galaxusPercentage) ?>%" style="border-color: #222; text-shadow: -1px -1px 0 #222, 0 -1px 0 #222, 1px -1px 0 #222, 1px 0 0 #222, 1px 1px 0 #222, 0 1px 0 #222, -1px 1px 0 #222, -1px 0 0 #222;">
-                <span class="value" style="width:<?=$galaxusPercentage?>%; background-color: #222;"></span>
+        <div class="deal_badge <?php if ($data["galaxus"]["availability"]==0){echo "expired";}?>">
+            <div class="progress" data-label="<?= floor($data["galaxus"]["availability"]) ?>%" style="border-color: #222; text-shadow: -1px -1px 0 #222, 0 -1px 0 #222, 1px -1px 0 #222, 1px 0 0 #222, 1px 1px 0 #222, 0 1px 0 #222, -1px 1px 0 #222, -1px 0 0 #222;">
+                <span class="value" style="width:<?= $data["galaxus"]["availability"] ?>; background-color: #222;"></span>
             </div>
             <div class="badge_content">
                 <div class="badge_header">
                     <div>
-                        <h1 class="title"><?= $data["galaxus"]["product"] ?></h1>
-                        <h2 class="subtitle"><?= $data["galaxus"]["category"] ?></h2>
+                        <h1 class="title"><?= $data["galaxus"]["title"] ?></h1>
+                        <h2 class="subtitle"><?= $data["galaxus"]["subtitle"] ?></h2>
                     </div>
                     <img src="assets/img/galaxus.jpg" alt="galaxus logo">
                 </div>
-                <img src="<?=reset($data["galaxus"]["apidata"])["images"][0]["url"]?>" class="deal_img">
+                <img src="<?=$data["galaxus"]["image"] ?>" class="deal_img">
                 <div class="badge_footer">
                     <div class="prices">
                         <h1 class="new_price">CHF <?= $data["galaxus"]["new_price"] ?></h1>
