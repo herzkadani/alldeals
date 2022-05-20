@@ -6,11 +6,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$json = file_get_contents("https://gianklug.com/alldeals-beta/frontend/deals.json");
-$data = json_decode($json, true);
+$deals_json = file_get_contents("/var/www/alldeals/frontend/deals.json");
+$data = json_decode($deals_json, true);
 
-$json =  file_get_contents("brandcolors.json");
-$brandcolors = json_decode($json, true);
+$colors_json =  file_get_contents("brandcolors.json");
+$brandcolors = json_decode($colors_json, true);
 
 
 function time_elapsed_string($datetime, $full = false) {
@@ -73,7 +73,7 @@ foreach ($data as $key => $value) {
         <h1>AllDeals&nbsp;</h1><h3>Alle Tagesangebote kombiniert!</h3>
     </header>
     <div class=deals_wrapper>
-        <?php echo $htmloutput; ?>
+        <?=$htmloutput?>
     </div>
 </body>
 
