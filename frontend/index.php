@@ -27,32 +27,32 @@ $htmloutput = '';
 foreach ($data as $key => $value) {
     $isexpired = ($data[$key]['availability']=='0%' ? 'expired' : '');
 
-    $htmloutput.='<div class="deal_badge' .$isexpired.'">
-    <div class="progress" data-label="'.$data[$key]['availability'].'" style="border-color: '.$brandcolors[$key].'; text-shadow: -1px -1px 0 '.$brandcolors[$key].', 0 -1px 0'.$brandcolors[$key].', 1px -1px 0 '.$brandcolors[$key].', 1px 0 0 '.$brandcolors[$key].', 1px 1px 0 '.$brandcolors[$key].', 0 1px 0 '.$brandcolors[$key].', -1px 1px 0 '.$brandcolors[$key].', -1px 0 0'.$brandcolors[$key].';">
+    $htmloutput.='<div class="deal_badge ' .$isexpired.'">
+        <div class="progress" data-label="'.$data[$key]['availability'].'" style="border-color: '.$brandcolors[$key].'; text-shadow: -1px -1px 0 '.$brandcolors[$key].', 0 -1px 0'.$brandcolors[$key].', 1px -1px 0 '.$brandcolors[$key].', 1px 0 0 '.$brandcolors[$key].', 1px 1px 0 '.$brandcolors[$key].', 0 1px 0 '.$brandcolors[$key].', -1px 1px 0 '.$brandcolors[$key].', -1px 0 0'.$brandcolors[$key].';">
         <span class="value" style="width:'.$data[$key]['availability'].'; background-color: '.$brandcolors[$key].';"></span>
-    </div>
-    <div class="badge_content">
+        </div>
+        <div class="badge_content">
         <div class="badge_header">
-            <div>
-                <h1 class="title">'.$data[$key]['title'].'</h1>
-                <h2 class="subtitle">'.$data[$key]['subtitle'].'</h2>
-            </div>
-            <img src="assets/img/'.$key.'.jpg" alt="'.$key.' logo">
+        <div>
+        <h1 class="title">'.$data[$key]['title'].'</h1>
+        <h2 class="subtitle">'.$data[$key]['subtitle'].'</h2>
+        </div>
+        <img src="assets/img/'.$key.'.jpg" alt="'.$key.' logo">
         </div>
         <img src="'.$data[$key]['image'].'" class="deal_img">
         <div class="badge_footer">
-            <div class="prices">
-                <h1 class="new_price">CHF '.$data[$key]['new_price'].'</h1>
-                <h2 class="old_price">CHF '.$data[$key]['old_price'].'</h2>
-            </div>
-            <span class="last_update">Letztes Update: '.time_elapsed_string($data[$key]['timestamp']).'</span>
-            <div><a href="https://www.digitec.ch/de/liveshopping/" class="view_btn_anchor" target="_blank">
-                    <div class="view_btn" style="background-color: '.$brandcolors[$key].';">Ansehen</div>
-                </a></div>
+        <div class="prices">
+        <h1 class="new_price">CHF '.$data[$key]['new_price'].'</h1>
+        <h2 class="old_price">CHF '.$data[$key]['old_price'].'</h2>
+        </div>
+        <span class="last_update">Letztes Update: '.time_elapsed_string($data[$key]['timestamp']).'</span>
+        <div><a href="'.$data[$key]['url']. '" class="view_btn_anchor" target="_blank">
+        <div class="view_btn" style="background-color: '.$brandcolors[$key].';">Ansehen</div>
+        </a></div>
 
         </div>
-    </div>
-</div>';
+        </div>
+        </div>';
 
 }
 

@@ -18,6 +18,7 @@ def get_deal(url):
     deal = {}
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
+    deal["url"] = url
     deal["title"] = soup.find('h1', {'class': 'product-description__title1'}).text
     deal["subtitle"] = soup.find('h2', {'class': 'product-description__title2'}).text
     deal["new_price"] = soup.find('h2', {'class': 'product-pricing__prices-new-price'}).text.replace("CHF ","").replace("\u2013","-")
@@ -45,6 +46,7 @@ def get_digitec_deal(url):
     deal = {}
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
+    deal["url"] = url
     deal["subtitle"] = soup.find('div', {'class': 'sc-j0oacw-0'}).text
     #deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
     apidata = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
@@ -99,5 +101,5 @@ output["daydeal_daily"] = deals[1]
 output["daydeal_weekly"] = deals[2]
 output["blickdeal"] = deals[3]
 output["galaxus"] = deals[4]
-with open("/var/www/alldeals-beta/frontend/deals.json", "w") as f:
+with open("/var/www/alldeals/frontend/deals.json", "w") as f:
     f.write(json.dumps(output))
