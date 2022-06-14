@@ -16,7 +16,7 @@ A demo instance is hosted at [deals.gk.wtf](https://deals.gk.wtf).
 Our scripts run every few minutes, scrape the data from the websites and parse it to display on our page.  
   
 **Can you add xyz?**  
-Possible, however difficulty in parsing differs from site to site. Please create an [issue](/issues).  
+Possible, however difficulty in parsing differs from site to site. Please create an [issue](https://github.com/herzkadani/alldeals/issues/new).  
 
 **I'm responsible for one of the stores and want you to remove us.**  
-Please create an [issue](/issues) and we'll remove it ASAP.
+Please create an [issue](https://github.com/herzkadani/alldeals/issues/new) and we'll remove it ASAP.
