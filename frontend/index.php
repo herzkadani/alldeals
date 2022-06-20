@@ -76,6 +76,11 @@ foreach ($data as $key => $value) {
     <div class=deals_wrapper>
         <?=$htmloutput?>
     </div>
+    <footer>
+    <a href="https://github.com/herzkadani/alldeals"><img src="assets/img/GitHub-Mark-120px-plus.png" alt="view on github" class="github_icon" ></a></img><p>made with <span style="color:red">❤</span> in switzerland <br> help us improve by contributing on GitHub</p>
+        
+    </footer>
+
 </body>
 
 </html>
