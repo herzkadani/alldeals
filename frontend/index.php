@@ -40,12 +40,12 @@ foreach ($data as $key => $value) {
         <img src="assets/img/'.$key.'.jpg" alt="'.$key.' logo">
         </div>
         <img src="'.$data[$key]['image'].'" class="deal_img">
+        <span class="last_update">Letztes Update: '.time_elapsed_string($data[$key]['timestamp']).'</span>
         <div class="badge_footer">
         <div class="prices">
         <h1 class="new_price">CHF '.$data[$key]['new_price'].'</h1>
         <h2 class="old_price">CHF '.$data[$key]['old_price'].'</h2>
         </div>
-        <span class="last_update">Letztes Update: '.time_elapsed_string($data[$key]['timestamp']).'</span>
         <div><a href="'.$data[$key]['url']. '" class="view_btn_anchor" target="_blank">
         <div class="view_btn" style="background-color: '.$brandcolors[$key].';">Ansehen</div>
         </a></div>
