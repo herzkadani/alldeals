@@ -78,6 +78,29 @@ def get_zmin_deal(url):
     deal["subtitle"] = soup.find('h2', {'class': 'deal-coupon__subtitle'}).text
     deal["availability"] = soup.find('div', {'class': ''}).text
 
+def get_mediamarkt_deal(url):
+    deal = {}
+    r = requests.get(url)
+    soup = BeautifulSoup(r.text, 'html.parser')
+    product_url = soup.find('div', {'class': 'tagesdeal-outer'}).parent['href']
+
+    r = requests.get(f"{url}{product_url}")
+    print(r.text)
+    soup = BeautifulSoup(r.text, 'html.parser')
+
+    deal["image"] = soup.find('a', {'class': 'zoom'})['href']
+
+    titles = soup.find('h1', {'itemprop':'name'}).getText().split(" - ")
+    deal["title"] = titles[0]
+    deal["subtitle"] = titles[1]
+    deal["url"] = f"{url}{product_url}"
+    deal["timestamp"] = int(round(time.time() * 1000))
+    deal["availability"] = "Nur solange Vorrat"
+    deal["old_price"] = soup.find('div', {'class': 'price-old'}).text
+    deal["new_price"] = soup.find('div', {'class': 'price'}).text
+
+    return deal
+
 def get_any_deal(deal):
     """
     Return deal by string
@@ -91,15 +114,18 @@ def get_any_deal(deal):
         return get_deal("https://www.daydeal.ch/")
     elif deal == "daydeal_weekly":
         return get_deal("https://www.daydeal.ch/deal-of-the-week/")
+    elif deal == "mediamarkt":
+        return get_mediamarkt_deal("https://www.mediamarkt.ch")
     else:
         return get_deal("https://www.blickdeal.ch/")
 with Pool(5) as p:
-    deals = p.map(get_any_deal, ["digitec", "daydeal_daily", "daydeal_weekly", "blick", "galaxus"])
+    deals = p.map(get_any_deal, ["digitec", "galaxus", "daydeal_daily", "daydeal_weekly", "blick", "mediamarkt"])
 output = {}
 output["digitec"] = deals[0]
-output["daydeal_daily"] = deals[1]
-output["daydeal_weekly"] = deals[2]
-output["blickdeal"] = deals[3]
-output["galaxus"] = deals[4]
+output["galaxus"] = deals[1]
+output["daydeal_daily"] = deals[2]
+output["daydeal_weekly"] = deals[3]
+output["blickdeal"] = deals[4]
+output["mediamarkt"] = deals[5]
 with open("/var/www/alldeals/frontend/deals.json", "w") as f:
     f.write(json.dumps(output))
