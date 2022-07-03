@@ -85,7 +85,6 @@ def get_mediamarkt_deal(url):
     product_url = soup.find('div', {'class': 'tagesdeal-outer'}).parent['href']
 
     r = requests.get(f"{url}{product_url}")
-    print(r.text)
     soup = BeautifulSoup(r.text, 'html.parser')
 
     deal["image"] = soup.find('a', {'class': 'zoom'})['href']
@@ -106,18 +105,21 @@ def get_any_deal(deal):
     Return deal by string
     """
     #time.sleep(randint(1,120))
-    if deal == "digitec":
-        return get_digitec_deal("https://digitec.ch/de/liveshopping/81")
-    elif deal == "galaxus":
-        return get_digitec_deal("https://galaxus.ch/de/liveshopping/81")
-    elif deal == "daydeal_daily":
-        return get_deal("https://www.daydeal.ch/")
-    elif deal == "daydeal_weekly":
-        return get_deal("https://www.daydeal.ch/deal-of-the-week/")
-    elif deal == "mediamarkt":
-        return get_mediamarkt_deal("https://www.mediamarkt.ch")
-    else:
-        return get_deal("https://www.blickdeal.ch/")
+    try:
+        if deal == "digitec":
+            return get_digitec_deal("https://digitec.ch/de/liveshopping/81")
+        elif deal == "galaxus":
+            return get_digitec_deal("https://galaxus.ch/de/liveshopping/81")
+        elif deal == "daydeal_daily":
+            return get_deal("https://www.daydeal.ch/")
+        elif deal == "daydeal_weekly":
+            return get_deal("https://www.daydeal.ch/deal-of-the-week/")
+        elif deal == "mediamarkt":
+            return get_mediamarkt_deal("https://www.mediamarkt.ch")
+        else:
+            return get_deal("https://www.blickdeal.ch/")
+    except Exception as e:
+        return []
 with Pool(5) as p:
     deals = p.map(get_any_deal, ["digitec", "galaxus", "daydeal_daily", "daydeal_weekly", "blick", "mediamarkt"])
 output = {}
