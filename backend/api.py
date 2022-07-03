@@ -56,8 +56,11 @@ def get_digitec_deal(url):
     deal["title"] = apidata[apidata_keys[0]]["productTypeName"]
     deal["availability"] = str(floor(100 - apidata[apidata_keys[1]]["salesInformation"]["numberOfItemsSold"] / apidata[apidata_keys[1]]["salesInformation"]["numberOfItems"] * 100))+"%"
     deal["new_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('strong').text.replace('.\u2013','')
-    deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
-    match = re.finditer(r"([0-9]+\.([0-9]{2}|–))", deal["old_price"])
+    try:
+        deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
+    except:
+        deal["old_price"] = "??"
+    match = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
     for m in match:
         deal["old_price"] = m.group(0)
 
@@ -119,6 +122,8 @@ def get_any_deal(deal):
         else:
             return get_deal("https://www.blickdeal.ch/")
     except Exception as e:
+        print(f"Failed to parse {deal}")
+        print(f"The following exception was thrown:\n{e}")
         return []
 with Pool(5) as p:
     deals = p.map(get_any_deal, ["digitec", "galaxus", "daydeal_daily", "daydeal_weekly", "blick", "mediamarkt"])
