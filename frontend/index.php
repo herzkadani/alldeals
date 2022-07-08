@@ -15,9 +15,9 @@ $brandcolors = json_decode($colors_json, true);
 
 function time_elapsed_string($datetime, $full = false) {
     // set timezone
-    date_default_timezone_set('UTC');
+    date_default_timezone_set('Europe/Zurich');
     $now = new DateTime;
-    $ago = new DateTime("@".$datetime);
+    $ago = new DateTime("@".(round($datetime/1000)));
     $diff = $now->diff($ago);
     return $diff->format('vor %i Minuten');
 }
