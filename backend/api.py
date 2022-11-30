@@ -155,5 +155,5 @@ output["mediamarkt"] = deals[5]
 output["zmin"] = deals[6]
 print("done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
-with open("/var/www/alldeals/frontend/deals/deals-"+filename_date+".json", "w") as f:
+with open("/deals/deals-"+filename_date+".json", "w") as f:
     f.write(json.dumps(output))

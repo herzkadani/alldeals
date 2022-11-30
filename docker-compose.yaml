@@ -1,0 +1,8 @@
+version: '3.3'
+services:
+  alldeals:
+    volumes:
+      - './data:/deals'
+    ports:
+      - '6969:8080'
+    image: 'alldeals:frontend'
