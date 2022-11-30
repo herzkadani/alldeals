@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$deals_json = file_get_contents("/var/www/alldeals/frontend/deals.json");
+$deals_json = file_get_contents("/var/www/alldeals/frontend/deals/deals-".date('Y-m-d').".json");
 $data = json_decode($deals_json, true);
 
 $colors_json =  file_get_contents("brandcolors.json");
