@@ -1,8 +1,8 @@
-FROM python:3
+FROM python:3.11-alpine
 
 WORKDIR /app
 COPY backend /app
 
-RUN pip3 install -r /app/requirements.txt
+RUN pip install -r /app/requirements.txt
 
-ENTRYPOINT ["/usr/bin/python3 /app/api.py"]
+CMD ["python", "/app/api.py"]
