@@ -10,11 +10,13 @@ from random import randint
 import time
 import pprint
 from math import floor
+from datetime import date
 
 def get_deal(url):
     """
     Get front page deal from a given url
     """
+    print("getting deal")
     deal = {}
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
@@ -43,21 +45,24 @@ def get_digitec_deal(url):
     """
     Get the digitec deal from a given url
     """
+    print("getting digiec deal")
     deal = {}
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
     deal["url"] = url
-    deal["subtitle"] = soup.find('div', {'class': 'sc-j0oacw-0'}).text
+    deal["subtitle"] = soup.find('div', {'class': 'sc-pudwgx-6'}).text
     #deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    apidata = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    apidata_keys = dict(enumerate(apidata))
+    apidata = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['pageProps']['products']
+    #apidata_keys = dict(enumerate(apidata))
 
-    deal["image"] = apidata[apidata_keys[0]]["images"][0]["url"]
-    deal["title"] = apidata[apidata_keys[0]]["productTypeName"]
-    deal["availability"] = str(floor(100 - apidata[apidata_keys[1]]["salesInformation"]["numberOfItemsSold"] / apidata[apidata_keys[1]]["salesInformation"]["numberOfItems"] * 100))+"%"
-    deal["new_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('strong').text.replace('.\u2013','')
+    deal["image"] = apidata[0]["product"]["images"][0]["url"]
+    deal["title"] = apidata[0]["product"]["name"]
+    deal["availability"] = str(floor(100 - apidata[0]["offer"]["salesInformation"]["numberOfItemsSold"] / apidata[0]["offer"]["salesInformation"]["numberOfItems"] * 100))+"%"
+    deal["new_price"] = soup.find('span', {'class': 'sc-pr6hlf-1'}).text.replace('.\u2013','')
     try:
-        deal["old_price"] = soup.find('span', {'class': 'sc-15boyr7-0'}).find('span').text.replace('statt ', '').replace('.\u2013','')
+        deal["old_price"] = soup.find('span', {'class': 'sc-pr6hlf-2'}).text.replace('statt ', '').replace('.\u2013','')
+        if "cash" in deal["old_price"].lower():
+            deal["old_price"] = "??"
     except:
         deal["old_price"] = "??"
     match = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
@@ -77,9 +82,20 @@ def get_zmin_deal(url):
     deal = {}
     r = requests.get(url)
     soup = BeautifulSoup(r.text, 'html.parser')
-    deal["title"] = soup.find('h1', {'class': 'deal-title'}).text
-    deal["subtitle"] = soup.find('h2', {'class': 'deal-coupon__subtitle'}).text
-    deal["availability"] = soup.find('div', {'class': ''}).text
+    deal["title"] = soup.find('h3', {'class': 'deal-title'}).text
+    deal["subtitle"] = soup.find('p', {'class': 'deal-subtitle'}).text
+    deal["availability"] = soup.find('span', {'class': 'deal-inventory'}).text+"%"
+    deal["image"] = soup.find('div', {'class': 'deal-img'}).find('img').get("data-src")
+    deal["url"] = url
+    deal["timestamp"] = int(round(time.time() * 1000))
+    deal["new_price"] = soup.find('h1', {'class': 'deal-price'}).text
+    try:
+        deal["old_price"] = soup.find('div', {'class': 'deal-old-price'}).find("span").text
+    except:
+        deal["old_price"] = "??.??"
+    return deal
+
+
 
 def get_mediamarkt_deal(url):
     deal = {}
@@ -110,15 +126,17 @@ def get_any_deal(deal):
     #time.sleep(randint(1,120))
     try:
         if deal == "digitec":
-            return get_digitec_deal("https://digitec.ch/de/liveshopping/81")
+            return get_digitec_deal("https://www.digitec.ch/de/daily-deal")
         elif deal == "galaxus":
-            return get_digitec_deal("https://galaxus.ch/de/liveshopping/81")
+            return get_digitec_deal("https://www.galaxus.ch/de/daily-deal")
         elif deal == "daydeal_daily":
             return get_deal("https://www.daydeal.ch/")
         elif deal == "daydeal_weekly":
             return get_deal("https://www.daydeal.ch/deal-of-the-week/")
         elif deal == "mediamarkt":
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
+        elif deal == "zmin":
+            return get_zmin_deal("https://myshop.20min.ch/de_DE")
         else:
             return get_deal("https://www.blickdeal.ch/")
     except Exception as e:
@@ -126,7 +144,7 @@ def get_any_deal(deal):
         print(f"The following exception was thrown:\n{e}")
         return []
 with Pool(5) as p:
-    deals = p.map(get_any_deal, ["digitec", "galaxus", "daydeal_daily", "daydeal_weekly", "blick", "mediamarkt"])
+    deals = p.map(get_any_deal, ["digitec", "galaxus", "daydeal_daily", "daydeal_weekly", "blick", "mediamarkt", "zmin"])
 output = {}
 output["digitec"] = deals[0]
 output["galaxus"] = deals[1]
@@ -134,5 +152,8 @@ output["daydeal_daily"] = deals[2]
 output["daydeal_weekly"] = deals[3]
 output["blickdeal"] = deals[4]
 output["mediamarkt"] = deals[5]
-with open("/var/www/alldeals/frontend/deals.json", "w") as f:
+output["zmin"] = deals[6]
+print("done, writing file")
+filename_date = date.today().strftime("%Y-%m-%d")
+with open("/var/www/alldeals/frontend/deals/deals-"+filename_date+".json", "w") as f:
     f.write(json.dumps(output))
