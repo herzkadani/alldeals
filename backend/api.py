@@ -10,8 +10,6 @@ from multiprocessing import Pool
 import requests
 from bs4 import BeautifulSoup
 
-from pprint import pprint
-
 
 def get_deal(url):
     """
