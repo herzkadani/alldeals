@@ -10,6 +10,8 @@ from multiprocessing import Pool
 import requests
 from bs4 import BeautifulSoup
 
+from pprint import pprint
+
 
 def get_deal(url):
     """
@@ -58,47 +60,54 @@ def get_digitec_deal(url):
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
     deal["url"] = url
-    deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
+    #deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
-        "props"
-    ]["pageProps"]["products"]
+    #apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
+    #    "props"
+    #]["pageProps"]["products"]
+    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholit"]
     # apidata_keys = dict(enumerate(apidata))
+    apidata = []
 
-    deal["image"] = apidata[0]["product"]["images"][0]["url"]
-    deal["title"] = apidata[0]["product"]["name"]
+    for key in apidata_raw.keys():
+        apidata.append(apidata_raw[key])
+    deal["image"] = apidata[0]["images"][0]["url"]
+    deal["title"] = apidata[0]["name"]
+    deal["subtitle"] = apidata[0]["productTypeName"]
     deal["availability"] = (
         str(
             floor(
                 100
-                - apidata[0]["offer"]["salesInformation"]["numberOfItemsSold"]
-                / apidata[0]["offer"]["salesInformation"]["numberOfItems"]
+                - apidata[1]["salesInformation"]["numberOfItemsSold"]
+                / apidata[1]["salesInformation"]["numberOfItems"]
                 * 100
             )
         )
         + "%"
     )
-    deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
-        ".\u2013", ""
-    )
+    #deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
+    #    ".\u2013", ""
+    #)
+    deal["new_price"] = apidata[1]["price"]["amountIncl"]
     try:
-        deal["old_price"] = (
-            soup.find("span", {"class": "sc-pr6hlf-2"})
-            .text.replace("statt ", "")
-            .replace(".\u2013", "")
-        )
-        if "cash" in deal["old_price"].lower():
-            deal["old_price"] = "??"
+        #deal["old_price"] = (
+        #    soup.find("span", {"class": "sc-pr6hlf-2"})
+        #    .text.replace("statt ", "")
+        #    .replace(".\u2013", "")
+        #)
+        #if "cash" in deal["old_price"].lower():
+        #    deal["old_price"] = "??"
+        deal["old_price"] = apidata[1]["price"]["insteadOfPrice"]
     except:
         deal["old_price"] = "??"
-    matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
-    for match in matches:
-        deal["old_price"] = match.group(0)
+    #matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
+    #for match in matches:
+    #    deal["old_price"] = match.group(0)
 
-    if not "." in deal["new_price"]:
-        deal["new_price"] = deal["new_price"] + ".-"
-    if not "." in deal["old_price"]:
-        deal["old_price"] = deal["old_price"] + ".-"
+    #if not "." in deal["new_price"]:
+    #    deal["new_price"] = deal["new_price"] + ".-"
+    #if not "." in deal["old_price"]:
+    #    deal["old_price"] = deal["old_price"] + ".-"
     # deal["raw"] = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])
     # Add timestamp
     deal["timestamp"] = int(round(time.time() * 1000))
@@ -155,9 +164,9 @@ def get_any_deal(deal):
     # time.sleep(randint(1,120))
     try:
         if deal == "digitec":
-            return get_digitec_deal("https://www.digitec.ch/de/daily-deal")
+            return get_digitec_deal("https://www.digitec.ch/de/adventcalendar")
         if deal == "galaxus":
-            return get_digitec_deal("https://www.galaxus.ch/de/daily-deal")
+            return get_digitec_deal("https://www.galaxus.ch/de/adventcalendar")
         if deal == "daydeal_daily":
             return get_deal("https://www.daydeal.ch/")
         if deal == "daydeal_weekly":
