@@ -125,6 +125,8 @@
     $alldeals = [];
     $output = "";
     $files = array_diff(scandir("/deals"), array('.', '..'));
+    # Reverse the listing so the latest deals are on top
+    $files = array_reverse($files);
     foreach ($files as $file) {
       $content = file_get_contents("file:///deals/" . $file);
       $json = json_decode($content, true);
