@@ -76,7 +76,7 @@ def get_blick_deal(url):
     except:
         deal["old_price"] = "?"
     deal["availability"] = soup.find("span", {"class": "dealstripe__amount"}).text
-    deal["image"] = soup.find("source").get("srcset")
+    deal["image"] = soup.find("source").get("srcset").split(",")[0]
     # Add timestamp
     deal["timestamp"] = int(round(time.time() * 1000))
     return deal
