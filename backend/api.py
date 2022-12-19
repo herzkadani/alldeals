@@ -1,15 +1,14 @@
 #!/usr/bin/python3
 # pylint: disable=W0702,C0301,C0116,C0114,R0911,broad-except
 import json
+import logging
 import re
 import time
-import logging
-import requests
-
 from datetime import date
 from math import floor
 from multiprocessing import Pool
 
+import requests
 from bs4 import BeautifulSoup
 
 
@@ -49,6 +48,7 @@ def get_deal(url):
     deal["timestamp"] = int(round(time.time() * 1000))
     return deal
 
+
 def get_blick_deal(url):
     """
     Get blick deal from a given url
@@ -65,9 +65,7 @@ def get_blick_deal(url):
         .replace("\u2013", "-")
     )
     try:
-        oldprice = soup.find(
-            "span", {"class": "deal__info"}
-        ).text
+        oldprice = soup.find("span", {"class": "deal__info"}).text
         # match regex
         matches = re.finditer(r"([0-9]+\.([0-9]{2}|–))", oldprice)
         for match in matches:
@@ -77,9 +75,7 @@ def get_blick_deal(url):
         # remove trailing 2
     except:
         deal["old_price"] = "?"
-    deal["availability"] = soup.find(
-        "span", {"class": "dealstripe__amount"}
-    ).text
+    deal["availability"] = soup.find("span", {"class": "dealstripe__amount"}).text
     deal["image"] = soup.find("source").get("srcset")
     # Add timestamp
     deal["timestamp"] = int(round(time.time() * 1000))
@@ -94,12 +90,14 @@ def get_digitec_deal(url):
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
     deal["url"] = url
-    #deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
+    # deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    #apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
+    # apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
     #    "props"
-    #]["pageProps"]["products"]
-    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholit"]
+    # ]["pageProps"]["products"]
+    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
+        "props"
+    ]["apolloState"]["grapholit"]
     # apidata_keys = dict(enumerate(apidata))
     apidata = []
 
@@ -121,28 +119,28 @@ def get_digitec_deal(url):
         )
         + "%"
     )
-    #deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
+    # deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
     #    ".\u2013", ""
-    #)
+    # )
     deal["new_price"] = apidata[-1]["price"]["amountIncl"]
     try:
-        #deal["old_price"] = (
+        # deal["old_price"] = (
         #    soup.find("span", {"class": "sc-pr6hlf-1"})
         #    .text.replace("statt ", "")
         #    .replace(".\u2013", "")
-        #)
-        #if "cash" in deal["old_price"].lower():
+        # )
+        # if "cash" in deal["old_price"].lower():
         #    deal["old_price"] = "??"
         deal["old_price"] = apidata[-1]["insteadOfPrice"]["price"]["amountIncl"]
     except:
         deal["old_price"] = "??"
-    #matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
-    #for match in matches:
+    # matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
+    # for match in matches:
     #    deal["old_price"] = match.group(0)
 
-    #if not "." in deal["new_price"]:
+    # if not "." in deal["new_price"]:
     #    deal["new_price"] = deal["new_price"] + ".-"
-    #if not "." in deal["old_price"]:
+    # if not "." in deal["old_price"]:
     #    deal["old_price"] = deal["old_price"] + ".-"
     # deal["raw"] = json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])
     # Add timestamp
@@ -197,7 +195,7 @@ def get_any_deal(deal):
     """
     Return deal by string
     """
-    logging.info(f"Getting deal for {deal}")
+    logging.info("Getting deal for %s", deal)
     try:
         if deal == "digitec":
             return get_digitec_deal("https://www.digitec.ch/de/adventcalendar")
@@ -217,37 +215,38 @@ def get_any_deal(deal):
             return get_blick_deal("https://box.blick.ch/deal-des-tages")
         if deal == "blick_weekly":
             return get_blick_deal("https://box.blick.ch/deal-der-woche")
+        return {}
 
     except Exception as ex:
-        logging.error(f"Failed to parse {deal}")
-        logging.error(f"The following exception was thrown:\n{ex}")
+        logging.error("Failed to parse %s", deal)
+        logging.error("The following exception was thrown:\n%s",ex)
         return []
 
-logging.basicConfig(format='%(levelname)s %(asctime)s - %(message)s', level=logging.INFO)
+
+logging.basicConfig(
+    format="%(levelname)s %(asctime)s - %(message)s", level=logging.INFO
+)
 
 deals_list = [
-            "digitec",
-            "galaxus",
-            "daydeal_daily",
-            "daydeal_weekly",
-            "blick",
-            "blick_weekly",
-            "mediamarkt",
-            "zmin",
-            "zmin_weekly",
-        ]
+    "digitec",
+    "galaxus",
+    "daydeal_daily",
+    "daydeal_weekly",
+    "blick",
+    "blick_weekly",
+    "mediamarkt",
+    "zmin",
+    "zmin_weekly",
+]
 
 with Pool(5) as p:
-    deals = p.map(
-        get_any_deal,
-        deals_list
-    )
+    deals = p.map(get_any_deal, deals_list)
 
 
 output = {}
-for i in range(len(deals_list)):
+for i, _ in enumerate(deals_list):
     output[deals_list[i]] = deals[i]
-    
+
 logging.info("Done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
 with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
