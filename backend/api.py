@@ -3,11 +3,13 @@
 import json
 import re
 import time
+import logging
+import requests
+
 from datetime import date
 from math import floor
 from multiprocessing import Pool
 
-import requests
 from bs4 import BeautifulSoup
 
 
@@ -15,7 +17,6 @@ def get_deal(url):
     """
     Get front page deal from a given url
     """
-    print("getting deal")
     deal = {}
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -48,12 +49,47 @@ def get_deal(url):
     deal["timestamp"] = int(round(time.time() * 1000))
     return deal
 
+def get_blick_deal(url):
+    """
+    Get blick deal from a given url
+    """
+    deal = {}
+    request = requests.get(url, timeout=30)
+    soup = BeautifulSoup(request.text, "html.parser")
+    deal["url"] = url
+    deal["title"] = soup.find("span", {"class": "deal__name"}).text
+    deal["subtitle"] = soup.find("p", {"class": "font-size-h4"}).text
+    deal["new_price"] = (
+        soup.find("span", {"class": "deal__price"})
+        .text.replace("CHF ", "")
+        .replace("\u2013", "-")
+    )
+    try:
+        oldprice = soup.find(
+            "span", {"class": "deal__info"}
+        ).text
+        # match regex
+        matches = re.finditer(r"([0-9]+\.([0-9]{2}|–))", oldprice)
+        for match in matches:
+            deal["old_price"] = match.group(0)
+
+        # oldprice = oldprice.replace("\n","").replace("statt CHF ","").replace(" ","").replace(".\u2013","")
+        # remove trailing 2
+    except:
+        deal["old_price"] = "?"
+    deal["availability"] = soup.find(
+        "span", {"class": "dealstripe__amount"}
+    ).text
+    deal["image"] = soup.find("source").get("srcset")
+    # Add timestamp
+    deal["timestamp"] = int(round(time.time() * 1000))
+    return deal
+
 
 def get_digitec_deal(url):
     """
     Get the digitec deal from a given url
     """
-    print("getting digiec deal")
     deal = {}
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
@@ -72,8 +108,8 @@ def get_digitec_deal(url):
             apidata.append(apidata_raw[key])
 
     deal["image"] = apidata[-2]["images"][0]["url"]
-    deal["title"] = apidata[-2]["name"]
-    deal["subtitle"] = apidata[-2]["productTypeName"]
+    deal["subtitle"] = apidata[-2]["name"]
+    deal["title"] = apidata[-2]["productTypeName"]
     deal["availability"] = (
         str(
             floor(
@@ -161,7 +197,7 @@ def get_any_deal(deal):
     """
     Return deal by string
     """
-    # time.sleep(randint(1,120))
+    logging.info(f"Getting deal for {deal}")
     try:
         if deal == "digitec":
             return get_digitec_deal("https://www.digitec.ch/de/adventcalendar")
@@ -175,35 +211,44 @@ def get_any_deal(deal):
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
         if deal == "zmin":
             return get_zmin_deal("https://myshop.20min.ch/de_DE")
-        return get_deal("https://www.blickdeal.ch/")
+        if deal == "zmin_weekly":
+            return get_zmin_deal("https://myshop.20min.ch/de_DE/category/wochenangebot")
+        if deal == "blick":
+            return get_blick_deal("https://box.blick.ch/deal-des-tages")
+        if deal == "blick_weekly":
+            return get_blick_deal("https://box.blick.ch/deal-der-woche")
+
     except Exception as ex:
-        print(f"Failed to parse {deal}")
-        print(f"The following exception was thrown:\n{ex}")
+        logging.error(f"Failed to parse {deal}")
+        logging.error(f"The following exception was thrown:\n{ex}")
         return []
 
+logging.basicConfig(format='%(levelname)s %(asctime)s - %(message)s', level=logging.INFO)
 
-with Pool(5) as p:
-    deals = p.map(
-        get_any_deal,
-        [
+deals_list = [
             "digitec",
             "galaxus",
             "daydeal_daily",
             "daydeal_weekly",
             "blick",
+            "blick_weekly",
             "mediamarkt",
             "zmin",
-        ],
+            "zmin_weekly",
+        ]
+
+with Pool(5) as p:
+    deals = p.map(
+        get_any_deal,
+        deals_list
     )
+
+
 output = {}
-output["digitec"] = deals[0]
-output["galaxus"] = deals[1]
-output["daydeal_daily"] = deals[2]
-output["daydeal_weekly"] = deals[3]
-output["blickdeal"] = deals[4]
-output["mediamarkt"] = deals[5]
-output["zmin"] = deals[6]
-print("done, writing file")
+for i in range(len(deals_list)):
+    output[deals_list[i]] = deals[i]
+    
+logging.info("Done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
 with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
     f.write(json.dumps(output))
