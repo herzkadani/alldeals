@@ -1,9 +1,11 @@
 {
-    "digitec": "#005598",
-    "daydeal_daily": "#3FAA35",
-    "daydeal_weekly": "#3FAA35",
-    "blickdeal": "#E20000",
-    "galaxus": "#222",
-    "mediamarkt": "#E20000",
-    "zmin": "#004daa"
+  "digitec": "#005598",
+  "daydeal_daily": "#3FAA35",
+  "daydeal_weekly": "#3FAA35",
+  "blick": "#E20000",
+  "blick_weekly": "#E20000",
+  "galaxus": "#222",
+  "mediamarkt": "#E20000",
+  "zmin": "#004daa",
+  "zmin_weekly": "#004daa"
 }
