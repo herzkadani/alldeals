@@ -208,7 +208,7 @@ def get_any_deal(deal):
         if deal == "mediamarkt":
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
         if deal == "zmin":
-            return get_zmin_deal("https://myshop.20min.ch/de_DE")
+            return get_zmin_deal("https://myshop.20min.ch/de_DE/category/angebot-des-tages")
         if deal == "zmin_weekly":
             return get_zmin_deal("https://myshop.20min.ch/de_DE/category/wochenangebot")
         if deal == "blick":
