@@ -103,15 +103,15 @@ def get_digitec_deal(url):
         if "OfferV2" in key or "Product" in key:
             apidata.append(apidata_raw[key])
 
-    deal["image"] = apidata[-2]["images"][0]["url"]
-    deal["subtitle"] = apidata[-2]["name"]
-    deal["title"] = apidata[-2]["productTypeName"]
+    deal["image"] = apidata[0]["images"][0]["url"]
+    deal["subtitle"] = apidata[0]["name"]
+    deal["title"] = apidata[0]["productTypeName"]
     deal["availability"] = (
         str(
             floor(
                 100
-                - apidata[-1]["salesInformation"]["numberOfItemsSold"]
-                / apidata[-1]["salesInformation"]["numberOfItems"]
+                - apidata[1]["salesInformation"]["numberOfItemsSold"]
+                / apidata[1]["salesInformation"]["numberOfItems"]
                 * 100
             )
         )
@@ -120,7 +120,7 @@ def get_digitec_deal(url):
     # deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
     #    ".\u2013", ""
     # )
-    deal["new_price"] = apidata[-1]["price"]["amountIncl"]
+    deal["new_price"] = apidata[1]["price"]["amountIncl"]
     try:
         # deal["old_price"] = (
         #    soup.find("span", {"class": "sc-pr6hlf-1"})
@@ -129,7 +129,7 @@ def get_digitec_deal(url):
         # )
         # if "cash" in deal["old_price"].lower():
         #    deal["old_price"] = "??"
-        deal["old_price"] = apidata[-1]["insteadOfPrice"]["price"]["amountIncl"]
+        deal["old_price"] = apidata[1]["insteadOfPrice"]["price"]["amountIncl"]
     except:
         deal["old_price"] = "??"
     # matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
