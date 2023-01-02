@@ -92,12 +92,10 @@ def get_digitec_deal(url):
     deal["url"] = url
     # deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    # apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
+    #apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
     #    "props"
     # ]["pageProps"]["products"]
-    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
-        "props"
-    ]["apolloState"]["grapholit"]
+    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholit"]
     # apidata_keys = dict(enumerate(apidata))
     apidata = []
 
@@ -198,9 +196,9 @@ def get_any_deal(deal):
     logging.info("Getting deal for %s", deal)
     try:
         if deal == "digitec":
-            return get_digitec_deal("https://www.digitec.ch/de/adventcalendar")
+            return get_digitec_deal("https://www.digitec.ch/de/daily-deal")
         if deal == "galaxus":
-            return get_digitec_deal("https://www.galaxus.ch/de/adventcalendar")
+            return get_digitec_deal("https://www.galaxus.ch/de/daily-deal")
         if deal == "daydeal_daily":
             return get_deal("https://www.daydeal.ch/")
         if deal == "daydeal_weekly":
