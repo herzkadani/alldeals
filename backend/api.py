@@ -67,7 +67,7 @@ def get_blick_deal(url):
     try:
         oldprice = soup.find("span", {"class": "deal__info"}).text
         # match regex
-        matches = re.finditer(r"([0-9]+\.([0-9]{2}|–))", oldprice)
+        matches = re.finditer(r"([0-9]?'?[0-9]+\.([0-9]{2}|–))", oldprice)
         for match in matches:
             deal["old_price"] = match.group(0)
 
