@@ -95,7 +95,7 @@ def get_digitec_deal(url):
     #apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
     #    "props"
     # ]["pageProps"]["products"]
-    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholit"]
+    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholith"]
     # apidata_keys = dict(enumerate(apidata))
     apidata = []
 
