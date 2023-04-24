@@ -58,7 +58,7 @@ def get_blick_deal(url):
     soup = BeautifulSoup(request.text, "html.parser")
     deal["url"] = url
     deal["title"] = soup.find("span", {"class": "deal__name"}).text
-    deal["subtitle"] = soup.find("p", {"class": "font-size-h4"}).text
+    deal["subtitle"] = soup.find("div", {"class": "deal__description"}).find("p").text
     deal["new_price"] = (
         soup.find("span", {"class": "deal__price"})
         .text.replace("CHF ", "")
@@ -92,10 +92,12 @@ def get_digitec_deal(url):
     deal["url"] = url
     # deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
-    #apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
+    # apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
     #    "props"
     # ]["pageProps"]["products"]
-    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"]["apolloState"]["grapholith"]
+    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
+        "props"
+    ]["apolloState"]["grapholith"]
     # apidata_keys = dict(enumerate(apidata))
     apidata = []
 
@@ -170,21 +172,24 @@ def get_mediamarkt_deal(url):
     deal = {}
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
-    product_url = soup.find("div", {"class": "tagesdeal-outer"}).parent["href"]
+    catentry = soup.find("div", {"class": "manual-prod-outer"}).get("data-catentryid")
 
-    request = requests.get(f"{url}{product_url}", timeout=30)
+    api_response = requests.get(
+        "https://www.mediamarkt.ch/webapp/wcs/stores/servlet/MultiChannelCMSCatalogEntriesJson?langId=-13&storeId=100452&catEntryId="
+        + catentry,
+        timeout=30,
+    ).json()
+
     soup = BeautifulSoup(request.text, "html.parser")
 
-    deal["image"] = soup.find("a", {"class": "zoom"})["href"]
-
-    titles = soup.find("h1", {"itemprop": "name"}).getText().split(" - ")
-    deal["title"] = titles[0]
-    deal["subtitle"] = titles[1]
-    deal["url"] = f"{url}{product_url}"
+    deal["image"] = api_response["1"]["image"]["productImage"]
+    deal["title"] = api_response["1"]["features"]["Merkmale"][0]["featureValue"]
+    deal["subtitle"] = api_response["1"]["name"]
+    deal["url"] = f"https://mediamarkt.ch{api_response['1']['url']}"
     deal["timestamp"] = int(round(time.time() * 1000))
     deal["availability"] = "Nur solange Vorrat"
-    deal["old_price"] = soup.find("div", {"class": "price-old"}).text
-    deal["new_price"] = soup.find("div", {"class": "price"}).text
+    deal["old_price"] = api_response["1"]["oldPrice"]
+    deal["new_price"] = api_response["1"]["price"]["price"]
 
     return deal
 
@@ -206,7 +211,9 @@ def get_any_deal(deal):
         if deal == "mediamarkt":
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
         if deal == "zmin":
-            return get_zmin_deal("https://myshop.20min.ch/de_DE/category/angebot-des-tages")
+            return get_zmin_deal(
+                "https://myshop.20min.ch/de_DE/category/angebot-des-tages"
+            )
         if deal == "zmin_weekly":
             return get_zmin_deal("https://myshop.20min.ch/de_DE/category/wochenangebot")
         if deal == "blick":
@@ -217,7 +224,7 @@ def get_any_deal(deal):
 
     except Exception as ex:
         logging.error("Failed to parse %s", deal)
-        logging.error("The following exception was thrown:\n%s",ex)
+        logging.error("The following exception was thrown:\n%s", ex)
         return []
 
 
