@@ -183,7 +183,8 @@ def get_mediamarkt_deal(url):
     soup = BeautifulSoup(request.text, "html.parser")
 
     deal["image"] = api_response["1"]["image"]["productImage"]
-    deal["title"] = api_response["1"]["features"]["Merkmale"][0]["featureValue"]
+    deal["title"] = api_response["1"]["features"]
+    deal["title"] = deal["title"][list(deal["title"].keys())[0]][0]["featureValue"]
     deal["subtitle"] = api_response["1"]["name"]
     deal["url"] = f"https://mediamarkt.ch{api_response['1']['url']}"
     deal["timestamp"] = int(round(time.time() * 1000))
