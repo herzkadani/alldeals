@@ -251,7 +251,8 @@ with Pool(5) as p:
 
 output = {}
 for i, _ in enumerate(deals_list):
-    output[deals_list[i]] = deals[i]
+    if not deals[i] == []:
+        output[deals_list[i]] = deals[i]
 
 logging.info("Done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
