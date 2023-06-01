@@ -12,6 +12,32 @@ import requests
 from bs4 import BeautifulSoup
 
 
+def get_daydealbeta(category):
+    """
+    Gets the deal of a daydeal beta category
+    """
+    BASE_URL = "https://beta.daydeal.ch/de/category/"
+    deal_url = BASE_URL + category
+
+    deal = {}
+    data = requests.get(deal_url, timeout=30)
+    soup = BeautifulSoup(data.text, "html.parser")
+    deal["url"] = deal_url
+    deal["title"] = soup.find("h1", {"class": "ProductMain-Title"}).text
+    deal["subtitle"] = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
+    deal["new_price"] = soup.find("div", {"class": "Price-Price"}).text
+    deal["old_price"] = soup.find("div", {"class": "Price-OldPriceValue"}).text
+    deal["image"] = soup.find("img", {"class": "ProductMain-Image"}).get("src")
+    try:
+        deal["availability"] = soup.find(
+            "span", {"class": "ProgressBar-TextValue"}
+        ).text
+    except:
+        deal["availability"] = "0%"
+    deal["timestamp"] = int(round(time.time() * 1000))
+    return deal
+
+
 def get_deal(url):
     """
     Get front page deal from a given url
@@ -205,6 +231,18 @@ def get_any_deal(deal):
             return get_digitec_deal("https://www.digitec.ch/de/daily-deal")
         if deal == "galaxus":
             return get_digitec_deal("https://www.galaxus.ch/de/daily-deal")
+        if deal == "daydeal_tagesdeal":
+            return get_daydealbeta("tagesdeal")
+        if deal == "daydeal_it_multimedia":
+            return get_daydealbeta("it-multimedia")
+        if deal == "daydeal_haushalt_wohnen":
+            return get_daydealbeta("haushalt-wohnen")
+        if deal == "daydeal_supermarkt_drogerie":
+            return get_daydealbeta("supermarkt-drogerie")
+        if deal == "daydeal_baumarkt_hobby":
+            return get_daydealbeta("baumarkt-hobby")
+        if deal == "daydeal_sport_freizeit":
+            return get_daydealbeta("sport-freizeit")
         if deal == "daydeal_daily":
             return get_deal("https://www.daydeal.ch/")
         if deal == "daydeal_weekly":
@@ -236,9 +274,13 @@ logging.basicConfig(
 deals_list = [
     "digitec",
     "galaxus",
-    "daydeal_daily",
-    "daydeal_weekly",
-    "blick",
+    "daydeal_tagesdeal",
+    "daydeal_it_multimedia",
+    "daydeal_haushalt_wohnen",
+    "daydeal_supermarkt_drogerie",
+    "daydeal_familie_baby",
+    "daydeal_baumarkt_hobby",
+    "daydeal_sport_freizeit" "blick",
     "blick_weekly",
     "mediamarkt",
     "zmin",
