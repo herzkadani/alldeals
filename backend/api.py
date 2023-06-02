@@ -16,8 +16,8 @@ def get_daydealbeta(category):
     """
     Gets the deal of a daydeal beta category
     """
-    BASE_URL = "https://beta.daydeal.ch/de/category/"
-    deal_url = BASE_URL + category
+    base_url = "https://beta.daydeal.ch/de/category/"
+    deal_url = base_url + category
 
     deal = {}
     data = requests.get(deal_url, timeout=30)
@@ -280,7 +280,8 @@ deals_list = [
     "daydeal_supermarkt_drogerie",
     "daydeal_familie_baby",
     "daydeal_baumarkt_hobby",
-    "daydeal_sport_freizeit" "blick",
+    "daydeal_sport_freizeit",
+    "blick",
     "blick_weekly",
     "mediamarkt",
     "zmin",
