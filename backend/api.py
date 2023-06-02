@@ -25,8 +25,16 @@ def get_daydealbeta(category):
     deal["url"] = deal_url
     deal["title"] = soup.find("h1", {"class": "ProductMain-Title"}).text
     deal["subtitle"] = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
-    deal["new_price"] = soup.find("div", {"class": "Price-Price"}).text
-    deal["old_price"] = soup.find("div", {"class": "Price-OldPriceValue"}).text
+    deal["new_price"] = (
+        soup.find("div", {"class": "DealPage-ProductMain"})
+        .find("div", {"class": "Price-Price"})
+        .text
+    )
+    deal["old_price"] = (
+        soup.find("div", {"class": "DealPage-ProductMain"})
+        .find("div", {"class": "Price-OldPriceValue"})
+        .text
+    )
     deal["image"] = soup.find("img", {"class": "ProductMain-Image"}).get("src")
     try:
         deal["availability"] = soup.find(
