@@ -66,6 +66,8 @@ foreach ($data as $key => $value) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="script.js" defer></script>
     <title>alldeals</title>
 </head>
 
@@ -77,8 +79,25 @@ foreach ($data as $key => $value) {
     <div class=deals_wrapper>
         <?=$htmloutput?>
     </div>
+    <div class="modal" id="settings-modal">
+        <div class="wrapper">
+            <h3>Settings</h3>
+            Soon(TM)
+            <br>
+            <br>
+            <button id="close-modal">
+                <span class="label">
+                    <span class="fa fa-close"></span>Close
+                </span>
+            </button>
+        </div>
+    </div>
     <footer>
     <a href="https://github.com/herzkadani/alldeals"><img src="assets/img/GitHub-Mark-120px-plus.png" alt="view on github" class="github_icon" ></a></img><p>made with <span style="color:red">❤</span> in switzerland <br> help us improve by contributing on GitHub</p>
+    <div class="settings">
+        <span class="label">Settings</span>
+        <span class="fa fa-cog"></span>
+    </div>
 
     </footer>
 

@@ -44,11 +44,32 @@ header h3 {
     box-shadow: 14px 10px 10px -10px rgba(0, 0, 0, 0.2);
 }
 
+.settings {
+  margin-left: auto;
+  margin-right: 50%;
+  padding: 8px;
+  border: 1px solid #5c5c5c;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+.settings .label {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+.settings:hover {
+  background-color: grey;
+  color: white;
+  transition: 0.2s;
+  cursor: pointer;
+}
 
 /* progresbar */
 
 .progress {
-    height: 2em;
+    height: 1.8em;
     width: 100% -3px;
     border: 3px solid;
     border-radius: 10px;
@@ -223,6 +244,54 @@ footer {
 }
 
 
+/* settings modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal .wrapper {
+  border: 1px solid black;
+  margin: 15% auto;
+  max-width: 50%;
+  padding: 20px;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+
+}
+
+
+#close-modal {
+  padding: 8px;
+  border: 1px solid #5c5c5c;
+  background-color: #FFFFFF;
+  border-radius: 10px;
+  transition: background-color 0.2s;
+}
+
+#close-modal:hover{
+  background-color: #5C5C5C;
+  color: #FFFFFF;
+  transition: 0.2s;
+}
+
+#close-modal .label {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+
+.open {
+  display: block !important;
+}
+
+
 /* responsive */
 
 @media (max-width: 800px) {
@@ -251,6 +320,13 @@ footer {
     .view_btn {
         font-size: 1.3em;
     }
+    .settings {
+      margin-left: 0;
+      margin-right: 0;
+    }
+    .settings .label {
+      display: none;
+    }
 }
 
 
@@ -261,7 +337,7 @@ footer {
         display: grid;
         margin-left: 2.5%;
         margin-bottom: 40px;
-    
+
     }
     .title {
         font-size: 1.2em;
@@ -282,3 +358,4 @@ footer {
         font-size: 0.8em;
     }
 }
+

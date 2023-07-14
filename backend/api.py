@@ -307,6 +307,7 @@ deals_list = [
     "zmin_weekly",
 ]
 
+
 with Pool(5) as p:
     deals = p.map(get_any_deal, deals_list)
 
