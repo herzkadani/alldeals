@@ -31,7 +31,7 @@ def get_daydealbeta(category):
     """
     Gets the deal of a daydeal beta category
     """
-    base_url = "https://beta.daydeal.ch/de/category/"
+    base_url = "https://daydeal.ch/de/category/"
     deal_url = base_url + category
 
     deal = Deal()
@@ -45,11 +45,14 @@ def get_daydealbeta(category):
         .find("div", {"class": "Price-Price"})
         .text
     )
-    deal.old_price = (
-        soup.find("div", {"class": "DealPage-ProductMain"})
-        .find("div", {"class": "Price-OldPriceValue"})
-        .text
-    )
+    try:
+        deal.old_price = (
+            soup.find("div", {"class": "DealPage-ProductMain"})
+            .find("div", {"class": "Price-OldPriceValue"})
+            .text
+        )
+    except:
+        deal.old_price = "??.??"
     deal.image = soup.find("img", {"class": "ProductMain-Image"}).get("src")
     try:
         deal.availability = soup.find("span", {"class": "ProgressBar-TextValue"}).text
@@ -255,6 +258,8 @@ def get_any_deal(deal):
             return get_daydealbeta("supermarkt-drogerie")
         if deal == "daydeal_baumarkt_hobby":
             return get_daydealbeta("baumarkt-hobby")
+        if deal == "daydeal_familie_baby":
+            return get_daydealbeta("familie-baby")
         if deal == "daydeal_sport_freizeit":
             return get_daydealbeta("sport-freizeit")
         if deal == "daydeal_daily":

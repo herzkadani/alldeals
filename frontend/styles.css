@@ -68,11 +68,25 @@ header h3 {
     font-weight: 400;
 }
 
+
+@keyframes widthAnimation {
+    from {
+      width: 100%;
+    }
+    to {
+      width: auto;
+    }
+  }
+
 .progress .value {
     display: inline-block;
     vertical-align: top;
     height: 100%;
     border-radius: 7px;
+    /* animate progressbar */
+    transition: width 0.5s ease-in-out;
+    animation: widthAnimation 0.5s;
+    width: 100%;
 }
 
 
@@ -169,11 +183,20 @@ header h3 {
     border-radius: 10px;
     padding: 0.5em;
     font-weight: 400;
-    font-size: 1.5em;
+    font-size: 1.25em;
     text-align: center;
     margin-top: 1em;
     width: fit-content;
     align-self: flex-end;
+    box-shadow: 14px 10px 10px -10px rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
+
+}
+
+.view_btn:hover {
+    filter: brightness(110%);
+    box-shadow: 14px 0px 10px -10px rgba(0, 0, 0, 0.2);
+    transition: 0.2s;
 }
 
 
@@ -202,7 +225,7 @@ footer {
 
 /* responsive */
 
-@media (max-width: 950px) {
+@media (max-width: 800px) {
     .badge_header {
         display: flex;
         flex-direction: column-reverse;
@@ -227,5 +250,35 @@ footer {
     }
     .view_btn {
         font-size: 1.3em;
+    }
+}
+
+
+/* 3 columns on desktop */
+@media (min-width: 1200px) {
+    .deals_wrapper {
+        grid-template-columns: 1fr 1fr 1fr;
+        display: grid;
+        margin-left: 2.5%;
+        margin-bottom: 40px;
+    
+    }
+    .title {
+        font-size: 1.2em;
+    }
+    .subtitle {
+        font-size: 1.1em;
+    }
+    .new_price {
+        font-size: 1.4em;
+    }
+    .old_price {
+        font-size: 1.2em;
+    }
+    .view_btn {
+        font-size: 1.1em;
+    }
+    .last_update {
+        font-size: 0.8em;
     }
 }
