@@ -167,7 +167,7 @@ def get_digitec_deal(url):
     # deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
     #    ".\u2013", ""
     # )
-    deal.new_price = apidata[1]["price"]["amountIncl"]
+    deal.new_price = apidata[1]["price"]["amountInclusive"]
     try:
         # deal["old_price"] = (
         #    soup.find("span", {"class": "sc-pr6hlf-1"})
@@ -176,7 +176,7 @@ def get_digitec_deal(url):
         # )
         # if "cash" in deal["old_price"].lower():
         #    deal["old_price"] = "??"
-        deal.old_price = apidata[1]["insteadOfPrice"]["price"]["amountIncl"]
+        deal.old_price = apidata[1]["insteadOfPrice"]["price"]["amountInclusive"]
     except:
         deal.old_price = "??"
     # matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
