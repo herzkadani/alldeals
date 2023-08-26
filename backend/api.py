@@ -142,7 +142,9 @@ def get_digitec_deal(url):
     # ]["pageProps"]["products"]
     apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
         "props"
-    ]["apolloState"]["grapholith"]
+    ][
+        "apolloState"
+    ]  # ["grapholith"]
     # apidata_keys = dict(enumerate(apidata))
     apidata = []
 
@@ -191,24 +193,27 @@ def get_digitec_deal(url):
     return deal
 
 
-def get_zmin_deal(url):
+def get_zmin_deal(filter):
     deal = Deal()
-    request = requests.get(url, timeout=30)
-    soup = BeautifulSoup(request.text, "html.parser")
-    deal.title = soup.find("h3", {"class": "deal-title"}).text
-    deal.subtitle = soup.find("p", {"class": "deal-subtitle"}).text
+    url = f"https://api.myshop.20min.ch/api/v2/shop/deals?navigation_sections_filter={filter}"
+    headers = {"Accept": "application/json", "Accept-Language": "de_DE"}
+    request = requests.get(url, headers=headers, timeout=30).json()
+    deal_data = request[0]
+    deal.title = deal_data["title"]
+    deal.subtitle = deal_data["homeDescription"]
     try:
-        deal.availability = soup.find("span", {"class": "deal-inventory"}).text + "%"
+        deal.availability = str(deal["remainingStockPercent"]) + "%"
     except:
         deal.availability = "So lange Vorrat"
-    deal.image = soup.find("div", {"class": "deal-img"}).find("img").get("data-src")
-    deal.url = url
+    deal.image = deal_data["coverPhotoPath"]
+    deal.url = f"https://myshop.20min.ch/de/category/{filter}"
     deal.timestamp = int(round(time.time() * 1000))
-    deal.new_price = soup.find("h1", {"class": "deal-price"}).text
+    deal.new_price = deal_data["price"] / 100
     try:
-        deal.old_price = soup.find("div", {"class": "deal-old-price"}).find("span").text
+        deal.old_price = deal_data["originalPrice"] / 100
     except:
         deal.old_price = "??.??"
+
     return deal
 
 
@@ -269,11 +274,9 @@ def get_any_deal(deal):
         if deal == "mediamarkt":
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
         if deal == "zmin":
-            return get_zmin_deal(
-                "https://myshop.20min.ch/de_DE/category/angebot-des-tages"
-            )
+            return get_zmin_deal("angebot-des-tages")
         if deal == "zmin_weekly":
-            return get_zmin_deal("https://myshop.20min.ch/de_DE/category/wochenangebot")
+            return get_zmin_deal("wochenangebot")
         if deal == "blick":
             return get_blick_deal("https://box.blick.ch/deal-des-tages")
         if deal == "blick_weekly":
@@ -319,7 +322,7 @@ for i, _ in enumerate(deals_list):
 
 logging.info("Done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
-print(json.dumps(output))
+# print(json.dumps(output))
 with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
     f.write(json.dumps(output))
 
