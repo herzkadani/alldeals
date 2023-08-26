@@ -202,15 +202,15 @@ def get_zmin_deal(filter):
     deal.title = deal_data["title"]
     deal.subtitle = deal_data["homeDescription"]
     try:
-        deal.availability = str(deal["remainingStockPercent"]) + "%"
+        deal.availability = str(deal_data["remainingStockPercent"]) + "%"
     except:
         deal.availability = "So lange Vorrat"
     deal.image = deal_data["coverPhotoPath"]
     deal.url = f"https://myshop.20min.ch/de/category/{filter}"
     deal.timestamp = int(round(time.time() * 1000))
-    deal.new_price = deal_data["price"] / 100
+    deal.new_price = f"{deal_data['price'] / 100:.2f}"
     try:
-        deal.old_price = deal_data["originalPrice"] / 100
+        deal.old_price = f"{deal_data['originalPrice'] / 100:.2f}"
     except:
         deal.old_price = "??.??"
 
@@ -322,7 +322,7 @@ for i, _ in enumerate(deals_list):
 
 logging.info("Done, writing file")
 filename_date = date.today().strftime("%Y-%m-%d")
-# print(json.dumps(output))
+print(json.dumps(output))
 with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
     f.write(json.dumps(output))
 
