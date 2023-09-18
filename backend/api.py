@@ -21,6 +21,7 @@ class Deal:
         self.old_price = ""
         self.availability = ""
         self.image = ""
+        self.color = ""
         self.timestamp = int(round(time.time() * 1000))
 
     def __repr__(self) -> str:
@@ -38,6 +39,7 @@ def get_daydealbeta(category):
     data = requests.get(deal_url, timeout=30)
     soup = BeautifulSoup(data.text, "html.parser")
     deal.url = deal_url
+    deal.color = "#3FAA35"
     deal.title = soup.find("h1", {"class": "ProductMain-Title"}).text
     deal.subtitle = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
     deal.new_price = (
@@ -104,6 +106,7 @@ def get_blick_deal(url):
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
     deal.url = url
+    deal.color = "#E20000"
     deal.title = soup.find("span", {"class": "deal__name"}).text
     deal.subtitle = soup.find("div", {"class": "deal__description"}).find("p").text
     deal.new_price = (
@@ -127,7 +130,7 @@ def get_blick_deal(url):
     return deal
 
 
-def get_digitec_deal(url):
+def get_digitec_deal(url, color="#005598"):
     """
     Get the digitec deal from a given url
     """
@@ -135,6 +138,7 @@ def get_digitec_deal(url):
     request = requests.get(url, timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
     deal.url = url
+    deal.color = color
     # deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
     # apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
@@ -193,9 +197,9 @@ def get_digitec_deal(url):
     return deal
 
 
-def get_zmin_deal(filter):
+def get_zmin_deal(filter_name):
     deal = Deal()
-    url = f"https://api.myshop.20min.ch/api/v2/shop/deals?navigation_sections_filter={filter}"
+    url = f"https://api.myshop.20min.ch/api/v2/shop/deals?navigation_sections_filter={filter_name}"
     headers = {"Accept": "application/json", "Accept-Language": "de_DE"}
     request = requests.get(url, headers=headers, timeout=30).json()
     deal_data = request[0]
@@ -206,7 +210,8 @@ def get_zmin_deal(filter):
     except:
         deal.availability = "So lange Vorrat"
     deal.image = deal_data["coverPhotoPath"]
-    deal.url = f"https://myshop.20min.ch/de/category/{filter}"
+    deal.url = f"https://myshop.20min.ch/de/category/{filter_name}"
+    deal.color = "#004daa"
     deal.timestamp = int(round(time.time() * 1000))
     deal.new_price = f"{deal_data['price'] / 100:.2f}"
     try:
@@ -236,6 +241,7 @@ def get_mediamarkt_deal(url):
     deal.title = deal.title[list(deal.title.keys())[0]][0]["featureValue"]
     deal.subtitle = api_response["1"]["name"]
     deal.url = f"https://mediamarkt.ch{api_response['1']['url']}"
+    deal.color = "#E20000"
     deal.availability = "Nur solange Vorrat"
     deal.old_price = api_response["1"]["oldPrice"]
     deal.new_price = api_response["1"]["price"]["price"]
@@ -252,7 +258,7 @@ def get_any_deal(deal):
         if deal == "digitec":
             return get_digitec_deal("https://www.digitec.ch/de/daily-deal")
         if deal == "galaxus":
-            return get_digitec_deal("https://www.galaxus.ch/de/daily-deal")
+            return get_digitec_deal("https://www.galaxus.ch/de/daily-deal", "#222")
         if deal == "daydeal_tagesdeal":
             return get_daydealbeta("tagesdeal")
         if deal == "daydeal_it_multimedia":
