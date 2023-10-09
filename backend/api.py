@@ -42,13 +42,13 @@ def get_daydealbeta(category):
     deal.url = deal_url
     deal.color = "#3FAA35"
     deal.subcategory = {
-        "daydeal_tagesdeal": "Tagesdeal",
-        "daydeal_it_multimedia": "IT / Multimedia",
-        "daydeal_haushalt_wohnen": "Haushalt / Wohnen",
-        "daydeal_supermarkt": "Supermarkt / Drogerie",
-        "daydeal_familie_baby": "Familie / Baby",
-        "daydeal_baumarkt_hobby": "Baumarkt / Hobby",
-        "daydeal_sport_freizeit": "Sport / Freizeit",
+        "tagesdeal": "Tagesdeal",
+        "it-multimedia": "IT / Multimedia",
+        "haushalt-wohnen": "Haushalt / Wohnen",
+        "supermarkt": "Supermarkt / Drogerie",
+        "familie-baby": "Familie / Baby",
+        "baumarkt-hobby": "Baumarkt / Hobby",
+        "sport-freizeit": "Sport / Freizeit",
     }.get(category)
     deal.title = soup.find("h1", {"class": "ProductMain-Title"}).text
     deal.subtitle = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
