@@ -22,6 +22,7 @@ class Deal:
         self.availability = ""
         self.image = ""
         self.color = ""
+        self.subcategory = ""
         self.timestamp = int(round(time.time() * 1000))
 
     def __repr__(self) -> str:
@@ -40,6 +41,15 @@ def get_daydealbeta(category):
     soup = BeautifulSoup(data.text, "html.parser")
     deal.url = deal_url
     deal.color = "#3FAA35"
+    deal.subcategory = {
+        "daydeal_tagesdeal": "Tagesdeal",
+        "daydeal_it_multimedia": "IT / Multimedia",
+        "daydeal_haushalt_wohnen": "Haushalt / Wohnen",
+        "daydeal_supermarkt": "Supermarkt / Drogerie",
+        "daydeal_familie_baby": "Familie / Baby",
+        "daydeal_baumarkt_hobby": "Baumarkt / Hobby",
+        "daydeal_sport_freizeit": "Sport / Freizeit",
+    }.get(category)
     deal.title = soup.find("h1", {"class": "ProductMain-Title"}).text
     deal.subtitle = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
     deal.new_price = (
@@ -107,6 +117,10 @@ def get_blick_deal(url):
     soup = BeautifulSoup(request.text, "html.parser")
     deal.url = url
     deal.color = "#E20000"
+    deal.subcategory = {
+        "deal-des-tages": "Tagesangebot",
+        "deal-der-woche": "Wochenangebot",
+    }.get(url.split("/")[-1])
     deal.title = soup.find("span", {"class": "deal__name"}).text
     deal.subtitle = soup.find("div", {"class": "deal__description"}).find("p").text
     deal.new_price = (
@@ -212,6 +226,10 @@ def get_zmin_deal(filter_name):
     deal.image = deal_data["coverPhotoPath"]
     deal.url = f"https://myshop.20min.ch/de/category/{filter_name}"
     deal.color = "#004daa"
+    deal.subcategory = {
+        "angebot-des-tages": "Tagesangebot",
+        "wochenangebot": "Wochenangebot",
+    }.get(filter_name)
     deal.timestamp = int(round(time.time() * 1000))
     deal.new_price = f"{deal_data['price'] / 100:.2f}"
     try:
