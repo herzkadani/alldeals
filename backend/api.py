@@ -156,6 +156,7 @@ def get_digitec_deal(url, color="#005598"):
     soup = BeautifulSoup(request.text, "html.parser")
     deal.url = url
     deal.color = color
+    deal.subcategory = "Tagesdeal"
     # deal["subtitle"] = soup.find("div", {"class": "sc-pudwgx-6"}).text
     # deal["apidata"]= json.loads(soup.find('script', {'id':'__NEXT_DATA__'}).contents[0])['props']['apolloState']
     # apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
@@ -230,7 +231,7 @@ def get_zmin_deal(filter_name):
     deal.url = f"https://myshop.20min.ch/de/category/{filter_name}"
     deal.color = "#004daa"
     deal.subcategory = {
-        "angebot-des-tages": "Tagesangebot",
+        "angebot-des-tages": "Angebot des Tages",
         "wochenangebot": "Wochenangebot",
     }.get(filter_name)
     deal.timestamp = int(round(time.time() * 1000))
@@ -256,7 +257,7 @@ def get_mediamarkt_deal(url):
     deal.title = deal_data.find("nav", {"aria-label":"Sie sind hier:"}).findAll("a")[-1].text
     deal.subtitle = deal_data.find("h1", {"color": "#111112"}).text
     deal.image = deal_data.find("div", {"class": "pdp-gallery-image"}).find("img").get("src")
-    deal.subcategory = "Tagesangebot"
+    deal.subcategory = "Tagesdeal"
     deal.url = deal_link
     deal.color = "#E20000"
     deal.availability = "100%"
