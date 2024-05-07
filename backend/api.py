@@ -49,6 +49,7 @@ def get_daydealbeta(category):
         "familie-baby": "Familie / Baby",
         "baumarkt-hobby": "Baumarkt / Hobby",
         "sport-freizeit": "Sport / Freizeit",
+        "supermarkt-drogerie": "Supermarkt / Drogerie",
     }.get(category)
     deal.title = soup.find("h1", {"class": "ProductMain-Title"}).text
     deal.subtitle = soup.find("h2", {"class": "ProductMain-Subtitle"}).text
@@ -108,28 +109,30 @@ def get_deal(url):
     return deal
 
 
-def get_blick_deal(url):
+def get_blick_deal(name):
     """
     Get blick deal from a given url
     """
     deal = Deal()
-    request = requests.get(url, timeout=30)
+    request = requests.get("https://box.blick.ch/deals", timeout=30)
     soup = BeautifulSoup(request.text, "html.parser")
-    deal.url = url
+    deal.url = "https://box.blick.ch/deals"
     deal.color = "#E20000"
     deal.subcategory = {
-        "deal-des-tages": "Tagesangebot",
-        "deal-der-woche": "Wochenangebot",
-    }.get(url.split("/")[-1])
-    deal.title = soup.find("span", {"class": "deal__name"}).text
-    deal.subtitle = soup.find("div", {"class": "deal__description"}).find("p").text
+        "tagesdeal": "Tagesangebot",
+        "wochendeal": "Wochenangebot",
+    }.get(name)
+    base_deal_url = soup.find("div", {"id": name}).find("a", {"class": "deal__link"}).get("href")
+    base_deal = BeautifulSoup(requests.get(base_deal_url, timeout=30).text, "html.parser")
+    deal.title = base_deal.find("span", {"class": "deal__name"}).text
+    deal.subtitle = base_deal.find("div", {"class": "deal__description"}).find("p").text
     deal.new_price = (
-        soup.find("span", {"class": "deal__price"})
+        base_deal.find("span", {"class": "deal__price"})
         .text.replace("CHF ", "")
         .replace("\u2013", "-")
     )
     try:
-        oldprice = soup.find("span", {"class": "deal__info"}).text
+        oldprice = base_deal.find("span", {"class": "deal__info"}).text
         # match regex
         matches = re.finditer(r"([0-9]?'?[0-9]+\.([0-9]{2}|–))", oldprice)
         for match in matches:
@@ -139,8 +142,8 @@ def get_blick_deal(url):
         # remove trailing 2
     except:
         deal.old_price = "?"
-    deal.availability = soup.find("span", {"class": "dealstripe__amount"}).text
-    deal.image = soup.find("img", {"class": "slider__image"}).get("data-src")
+    deal.availability = base_deal.find("span", {"class": "dealstripe__amount"}).text
+    deal.image = base_deal.find("img", {"class": "slider__image"}).get("data-src")
     return deal
 
 
@@ -242,27 +245,23 @@ def get_zmin_deal(filter_name):
 
 def get_mediamarkt_deal(url):
     deal = Deal()
-    request = requests.get(url, timeout=30)
+    fake_ua_headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
+    }
+    request = requests.get(url, timeout=30, headers=fake_ua_headers)
     soup = BeautifulSoup(request.text, "html.parser")
-    catentry = soup.find("div", {"class": "manual-prod-outer"}).get("data-catentryid")
+    deal_link = url+soup.find("section", {"data-test": "mms-home-countdown"}).find("a").get("href")
+    deal_data = BeautifulSoup(requests.get(deal_link, timeout=30, headers=fake_ua_headers).text, "html.parser")
 
-    api_response = requests.get(
-        "https://www.mediamarkt.ch/webapp/wcs/stores/servlet/MultiChannelCMSCatalogEntriesJson?langId=-13&storeId=100452&catEntryId="
-        + catentry,
-        timeout=30,
-    ).json()
-
-    soup = BeautifulSoup(request.text, "html.parser")
-
-    deal.image = api_response["1"]["image"]["productImage"]
-    deal.title = api_response["1"]["features"]
-    deal.title = deal.title[list(deal.title.keys())[0]][0]["featureValue"]
-    deal.subtitle = api_response["1"]["name"]
-    deal.url = f"https://mediamarkt.ch{api_response['1']['url']}"
+    deal.title = deal_data.find("nav", {"aria-label":"Sie sind hier:"}).findAll("a")[-1].text
+    deal.subtitle = deal_data.find("h1", {"color": "#111112"}).text
+    deal.image = deal_data.find("div", {"class": "pdp-gallery-image"}).find("img").get("src")
+    deal.subcategory = "Tagesangebot"
+    deal.url = deal_link
     deal.color = "#E20000"
     deal.availability = "Nur solange Vorrat"
-    deal.old_price = api_response["1"]["oldPrice"]
-    deal.new_price = api_response["1"]["price"]["price"]
+    deal.old_price = deal_data.find("span", {"class": "sc-3f2da4f5-0 hpcVHR"}).text.replace("CHF", "").strip()
+    deal.new_price = deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"}).text.replace("CHF", "").strip()
 
     return deal
 
@@ -302,9 +301,9 @@ def get_any_deal(deal):
         if deal == "zmin_weekly":
             return get_zmin_deal("wochenangebot")
         if deal == "blick":
-            return get_blick_deal("https://box.blick.ch/deal-des-tages")
+            return get_blick_deal("tagesdeal")
         if deal == "blick_weekly":
-            return get_blick_deal("https://box.blick.ch/deal-der-woche")
+            return get_blick_deal("wochendeal")
         return {}
 
     except Exception as ex:
@@ -334,21 +333,22 @@ deals_list = [
     "zmin_weekly",
 ]
 
+def main():
+    with Pool(5) as p:
+        deals = p.map(get_any_deal, deals_list)
 
-with Pool(5) as p:
-    deals = p.map(get_any_deal, deals_list)
 
+    output = {}
+    for i, _ in enumerate(deals_list):
+        if not deals[i] == []:
+            output[deals_list[i]] = json.loads(str(deals[i]))
 
-output = {}
-for i, _ in enumerate(deals_list):
-    if not deals[i] == []:
-        output[deals_list[i]] = json.loads(str(deals[i]))
-
-logging.info("Done, writing file")
-filename_date = date.today().strftime("%Y-%m-%d")
-print(json.dumps(output))
-with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
-    f.write(json.dumps(output))
+    logging.info("Done, writing file")
+    filename_date = date.today().strftime("%Y-%m-%d")
+    print(json.dumps(output))
+    with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
+        f.write(json.dumps(output))
 
 if __name__ == "__main__":
     freeze_support()
+    main()
