@@ -259,9 +259,9 @@ def get_mediamarkt_deal(url):
     deal.subcategory = "Tagesangebot"
     deal.url = deal_link
     deal.color = "#E20000"
-    deal.availability = "Nur solange Vorrat"
+    deal.availability = "100%"
     deal.old_price = deal_data.find("span", {"class": "sc-3f2da4f5-0 hpcVHR"}).text.replace("CHF", "").strip()
-    deal.new_price = deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"}).text.replace("CHF", "").strip()
+    deal.new_price = deal_data.find("span", {"class": "sc-3f2da4f5-0 gaNjcA sc-b45c0335-2 fWUVlw"}).text.replace("CHF", "").strip()
 
     return deal
 
