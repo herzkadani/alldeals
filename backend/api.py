@@ -122,8 +122,12 @@ def get_blick_deal(name):
         "tagesdeal": "Tagesangebot",
         "wochendeal": "Wochenangebot",
     }.get(name)
-    base_deal_url = soup.find("div", {"id": name}).find("a", {"class": "deal__link"}).get("href")
-    base_deal = BeautifulSoup(requests.get(base_deal_url, timeout=30).text, "html.parser")
+    base_deal_url = (
+        soup.find("div", {"id": name}).find("a", {"class": "deal__link"}).get("href")
+    )
+    base_deal = BeautifulSoup(
+        requests.get(base_deal_url, timeout=30).text, "html.parser"
+    )
     deal.title = base_deal.find("span", {"class": "deal__name"}).text
     deal.subtitle = base_deal.find("div", {"class": "deal__description"}).find("p").text
     deal.new_price = (
@@ -162,27 +166,23 @@ def get_digitec_deal(url, color="#005598"):
     # apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).contents[0])[
     #    "props"
     # ]["pageProps"]["products"]
-    apidata_raw = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)[
-        "props"
-    ][
-        "apolloState"
-    ]  # ["grapholith"]
-    # apidata_keys = dict(enumerate(apidata))
-    apidata = []
+    apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"][
+        "pageProps"
+    ]["preloadedQuery"]["response"]["data"]["dailyDealProducts"][0]["product"]
 
-    for key in apidata_raw.keys():
-        if "OfferV2" in key or "Product" in key:
-            apidata.append(apidata_raw[key])
-
-    deal.image = apidata[0]["images"][0]["url"]
-    deal.subtitle = apidata[0]["name"]
-    deal.title = apidata[0]["productTypeName"]
+    deal.image = (
+        "https://static01.galaxus.com"
+        + apidata["previewImages"]["nodes"][0]["relativeUrl"]
+        + "_720.jpeg"
+    )
+    deal.subtitle = apidata["nameExtensions"]["properties"]
+    deal.title = apidata["name"]
     deal.availability = (
         str(
             floor(
                 100
-                - apidata[1]["salesInformation"]["numberOfItemsSold"]
-                / apidata[1]["salesInformation"]["numberOfItems"]
+                - apidata["salesInformation"]["numberOfItemsSold"]
+                / apidata["salesInformation"]["numberOfItems"]
                 * 100
             )
         )
@@ -191,7 +191,7 @@ def get_digitec_deal(url, color="#005598"):
     # deal["new_price"] = soup.find("span", {"class": "sc-pr6hlf-1"}).text.replace(
     #    ".\u2013", ""
     # )
-    deal.new_price = apidata[1]["price"]["amountInclusive"]
+    deal.new_price = apidata["price"]["amountInclusive"]
     try:
         # deal["old_price"] = (
         #    soup.find("span", {"class": "sc-pr6hlf-1"})
@@ -200,7 +200,7 @@ def get_digitec_deal(url, color="#005598"):
         # )
         # if "cash" in deal["old_price"].lower():
         #    deal["old_price"] = "??"
-        deal.old_price = apidata[1]["insteadOfPrice"]["price"]["amountInclusive"]
+        deal.old_price = apidata["insteadOfPrice"]["price"]["amountInclusive"]
     except:
         deal.old_price = "??"
     # matches = re.finditer(r"([0-9?]+\.([0-9?]{2}|–))", deal["old_price"])
@@ -251,18 +251,34 @@ def get_mediamarkt_deal(url):
     }
     request = requests.get(url, timeout=30, headers=fake_ua_headers)
     soup = BeautifulSoup(request.text, "html.parser")
-    deal_link = url+soup.find("section", {"data-test": "mms-home-countdown"}).find("a").get("href")
-    deal_data = BeautifulSoup(requests.get(deal_link, timeout=30, headers=fake_ua_headers).text, "html.parser")
+    deal_link = url + soup.find("section", {"data-test": "mms-home-countdown"}).find(
+        "a"
+    ).get("href")
+    deal_data = BeautifulSoup(
+        requests.get(deal_link, timeout=30, headers=fake_ua_headers).text, "html.parser"
+    )
 
-    deal.title = deal_data.find("nav", {"aria-label":"Sie sind hier:"}).findAll("a")[-1].text
+    deal.title = (
+        deal_data.find("nav", {"aria-label": "Sie sind hier:"}).findAll("a")[-1].text
+    )
     deal.subtitle = deal_data.find("h1", {"color": "#111112"}).text
-    deal.image = deal_data.find("div", {"class": "pdp-gallery-image"}).find("img").get("src")
+    deal.image = (
+        deal_data.find("div", {"class": "pdp-gallery-image"}).find("img").get("src")
+    )
     deal.subcategory = "Tagesdeal"
     deal.url = deal_link
     deal.color = "#E20000"
     deal.availability = "100%"
-    deal.old_price = deal_data.find("span", {"class": "sc-3f2da4f5-0 hpcVHR"}).text.replace("CHF", "").strip()
-    deal.new_price = deal_data.find("span", {"class": "sc-3f2da4f5-0 gaNjcA sc-b45c0335-2 fWUVlw"}).text.replace("CHF", "").strip()
+    deal.old_price = (
+        deal_data.find("span", {"class": "sc-3f2da4f5-0 hpcVHR"})
+        .text.replace("CHF", "")
+        .strip()
+    )
+    deal.new_price = (
+        deal_data.find("span", {"class": "sc-3f2da4f5-0 gaNjcA sc-b45c0335-2 fWUVlw"})
+        .text.replace("CHF", "")
+        .strip()
+    )
 
     return deal
 
@@ -334,10 +350,10 @@ deals_list = [
     "zmin_weekly",
 ]
 
+
 def main():
     with Pool(5) as p:
         deals = p.map(get_any_deal, deals_list)
-
 
     output = {}
     for i, _ in enumerate(deals_list):
@@ -349,6 +365,7 @@ def main():
     print(json.dumps(output))
     with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
         f.write(json.dumps(output))
+
 
 if __name__ == "__main__":
     freeze_support()
