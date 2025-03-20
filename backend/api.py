@@ -175,8 +175,13 @@ def get_digitec_deal(url, color="#005598"):
         + apidata["previewImages"]["nodes"][0]["relativeUrl"]
         + "_720.jpeg"
     )
-    deal.subtitle = apidata["nameExtensions"]["properties"]
     deal.title = apidata["name"]
+    brand = apidata["brand"]
+    if brand["showNameInProductName"]:
+        deal.title = f"{brand['name']} {deal.title}"
+        deal.subtitle = apidata["nameExtensions"]["properties"]
+    else:
+        deal.subtitle = brand['name']
     deal.availability = (
         str(
             floor(
