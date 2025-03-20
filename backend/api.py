@@ -215,35 +215,6 @@ def get_digitec_deal(url, color="#005598"):
     return deal
 
 
-def get_zmin_deal(filter_name):
-    deal = Deal()
-    url = f"https://api.myshop.20min.ch/api/v2/shop/deals?navigation_sections_filter={filter_name}"
-    headers = {"Accept": "application/json", "Accept-Language": "de_DE"}
-    request = requests.get(url, headers=headers, timeout=30).json()
-    deal_data = request[0]
-    deal.title = deal_data["title"]
-    deal.subtitle = deal_data["homeDescription"]
-    try:
-        deal.availability = str(deal_data["remainingStockPercent"]) + "%"
-    except:
-        deal.availability = "So lange Vorrat"
-    deal.image = deal_data["coverPhotoPath"]
-    deal.url = f"https://myshop.20min.ch/de/category/{filter_name}"
-    deal.color = "#004daa"
-    deal.subcategory = {
-        "angebot-des-tages": "Angebot des Tages",
-        "wochenangebot": "Wochenangebot",
-    }.get(filter_name)
-    deal.timestamp = int(round(time.time() * 1000))
-    deal.new_price = f"{deal_data['price'] / 100:.2f}"
-    try:
-        deal.old_price = f"{deal_data['originalPrice'] / 100:.2f}"
-    except:
-        deal.old_price = "??.??"
-
-    return deal
-
-
 def get_mediamarkt_deal(url):
     deal = Deal()
     fake_ua_headers = {
@@ -313,10 +284,6 @@ def get_any_deal(deal):
             return get_deal("https://www.daydeal.ch/deal-of-the-week/")
         if deal == "mediamarkt":
             return get_mediamarkt_deal("https://www.mediamarkt.ch")
-        if deal == "zmin":
-            return get_zmin_deal("angebot-des-tages")
-        if deal == "zmin_weekly":
-            return get_zmin_deal("wochenangebot")
         if deal == "blick":
             return get_blick_deal("tagesdeal")
         if deal == "blick_weekly":
@@ -346,8 +313,6 @@ deals_list = [
     "blick",
     "blick_weekly",
     "mediamarkt",
-    "zmin",
-    "zmin_weekly",
 ]
 
 
