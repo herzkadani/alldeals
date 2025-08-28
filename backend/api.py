@@ -168,7 +168,7 @@ def get_digitec_deal(url, color="#005598"):
     # ]["pageProps"]["products"]
     apidata = json.loads(soup.find("script", {"id": "__NEXT_DATA__"}).text)["props"][
         "pageProps"
-    ]["preloadedQuery"]["response"]["data"]["dailyDealProducts"][0]["product"]
+    ]["preloadedQuery"]["rawResponse"]["data"]["dailyDealProducts"][0]["product"]
 
     deal.image = (
         "https://static01.galaxus.com"
@@ -227,31 +227,26 @@ def get_mediamarkt_deal(url):
     }
     request = requests.get(url, timeout=30, headers=fake_ua_headers)
     soup = BeautifulSoup(request.text, "html.parser")
-    deal_link = url + soup.find("section", {"data-test": "mms-home-countdown"}).find(
-        "a"
-    ).get("href")
+    deal_link = url + soup.find("h3", string="Tagesangebot").find_parent("a").get("href")
     deal_data = BeautifulSoup(
         requests.get(deal_link, timeout=30, headers=fake_ua_headers).text, "html.parser"
     )
 
-    deal.title = (
-        deal_data.find("nav", {"aria-label": "Sie sind hier:"}).findAll("a")[-1].text
-    )
-    deal.subtitle = deal_data.find("h1", {"color": "#111112"}).text
+    deal.title = deal_data.find("title").text.split("|")[0].strip()
     deal.image = (
-        deal_data.find("div", {"class": "pdp-gallery-image"}).find("img").get("src")
+        deal_data.find("img", {"class": "pdp-gallery-image"}).get("src")
     )
     deal.subcategory = "Tagesdeal"
     deal.url = deal_link
     deal.color = "#E20000"
     deal.availability = "100%"
     deal.old_price = (
-        deal_data.find("span", {"class": "sc-3f2da4f5-0 hpcVHR"})
+        deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"})
         .text.replace("CHF", "")
         .strip()
     )
     deal.new_price = (
-        deal_data.find("span", {"class": "sc-3f2da4f5-0 gaNjcA sc-b45c0335-2 fWUVlw"})
+        deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"})
         .text.replace("CHF", "")
         .strip()
     )
