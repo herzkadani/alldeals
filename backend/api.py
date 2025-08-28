@@ -241,13 +241,15 @@ def get_mediamarkt_deal(url):
     deal.color = "#E20000"
     deal.availability = "100%"
     deal.old_price = (
-        deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"})
+        deal_data.find("span", {"class": "sc-94eb08bc-0 iJxYPS"})
         .text.replace("CHF", "")
+        .replace(".-" , "")
         .strip()
     )
     deal.new_price = (
-        deal_data.find("span", {"class": "sc-e0c7d9f7-0 bPkjPs"})
+        deal_data.find("span", {"class": "sc-94eb08bc-0 iEjlmP sc-8a3a8cd8-2 csCDkt"})
         .text.replace("CHF", "")
+        .replace(".-" , "")
         .strip()
     )
 
@@ -328,7 +330,7 @@ def main():
     logging.info("Done, writing file")
     filename_date = date.today().strftime("%Y-%m-%d")
     print(json.dumps(output))
-    with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
+    with open("deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
         f.write(json.dumps(output))
 
 
