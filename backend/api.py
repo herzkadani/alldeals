@@ -330,7 +330,7 @@ def main():
     logging.info("Done, writing file")
     filename_date = date.today().strftime("%Y-%m-%d")
     print(json.dumps(output))
-    with open("deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
+    with open("/deals/deals-" + filename_date + ".json", "w", encoding="utf-8") as f:
         f.write(json.dumps(output))
 
 
